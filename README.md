@@ -1,3 +1,7 @@
+## Core Module Of MixFile
+包含MixFile服务端路由逻辑实现核心代码，上传线路核心代码
+以及mix_davc mixlist等文件结构,上传下载逻辑,以及分享码解析逻辑
+
 ## Dependency Usage
 
 ```xml
