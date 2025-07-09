@@ -2,5 +2,5 @@
 https://jitpack.io/#InvertGeek/mixfile-core
 
 
-## Example
+## Code Example
 https://github.com/InvertGeek/mixfilecli/blob/master/src/main/kotlin/com/donut/mixfilecli/Application.kt
