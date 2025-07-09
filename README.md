@@ -1,5 +1,22 @@
 ## Dependency Usage
 
+```xml
+<repositories>
+    <repository>
+		<id>jitpack.io</id>
+		<url>https://jitpack.io</url>
+	</repository>
+</repositories>
+```
+
+```xml
+<dependency>
+	<groupId>com.github.InvertGeek</groupId>
+	<artifactId>mixfile-core</artifactId>
+	<version>Tag</version>
+</dependency>
+```
+
 https://jitpack.io/#InvertGeek/mixfile-core
 
 
