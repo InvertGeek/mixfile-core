@@ -16,7 +16,7 @@ repositories {
 }
 
 application {
-//    mainClass.set("com.donut.mixfile.server.core.MixFileServer")
+    mainClass.set("com.donut.mixfile.server.core.MixFileServer")
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
