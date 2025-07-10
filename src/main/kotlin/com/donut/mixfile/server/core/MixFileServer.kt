@@ -20,6 +20,7 @@ abstract class MixFileServer(
     open val downloadTaskCount: Int = 5
     open val uploadTaskCount: Int = 10
     open val uploadRetryCount: Int = 10
+    var server: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>? = null
 
     open val chunkSize = 1.mb
 
@@ -74,9 +75,11 @@ abstract class MixFileServer(
 
     fun start(wait: Boolean) {
         serverPort = findAvailablePort(serverPort) ?: serverPort
-        embeddedServer(Netty, port = serverPort, watchPaths = emptyList()) {
+        val fileServer = embeddedServer(factory = Netty, port = serverPort, watchPaths = emptyList()) {
             defaultModule()
-        }.start(wait = wait)
+        }
+        server = fileServer
+        fileServer.start(wait = wait)
     }
 }
 
