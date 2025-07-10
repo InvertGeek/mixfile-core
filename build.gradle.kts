@@ -7,8 +7,8 @@ plugins {
     `maven-publish`
     `java-library`
 }
-val projectVersion = "1.0.1"
-group = "com.donut.mixfile_core"
+val projectVersion = "1.0.2"
+group = "com.donut.mixfile-core"
 version = projectVersion
 
 repositories {
@@ -28,7 +28,7 @@ publishing {
         create<MavenPublication>("mavenJava") {
             from(components["java"]) // Java 项目，或 components["kotlin"] 对于 Kotlin Multiplatform
             groupId = "com.donut"
-            artifactId = "mixfile_core"
+            artifactId = "mixfile-core"
             version = projectVersion
         }
     }

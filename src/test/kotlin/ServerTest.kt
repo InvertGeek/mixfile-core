@@ -2,7 +2,6 @@ import com.donut.mixfile.server.core.MixFileServer
 import com.donut.mixfile.server.core.Uploader
 import com.donut.mixfile.server.core.uploaders.A2Uploader
 import com.donut.mixfile.server.core.utils.resolveMixShareInfo
-import java.io.InputStream
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
@@ -28,17 +27,13 @@ fun main() {
             return A2Uploader
         }
 
-        override suspend fun getStaticFile(path: String): InputStream? {
-            return null
-        }
-
         override suspend fun genDefaultImage(): ByteArray {
             //固定返回1像素gif,最小尺寸
             return Base64.decode("R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=")
         }
 
         override suspend fun getFileHistory(): String {
-            return ""
+            return "[]"
         }
 
     }
@@ -47,5 +42,6 @@ fun main() {
     shareInfo!!
     println("文件信息: ${shareInfo.fileName} 大小: ${shareInfo.fileSize}字节")
     println("http://127.0.0.1:8084/api/download?s=${shareInfo}")
+    println("访问地址: http://127.0.0.1:8084")
     server.start(wait = true)
 }

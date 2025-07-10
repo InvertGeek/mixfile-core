@@ -32,7 +32,9 @@ abstract class MixFileServer(
 
     abstract fun getUploader(): Uploader
 
-    abstract suspend fun getStaticFile(path: String): InputStream?
+    open suspend fun getStaticFile(path: String): InputStream? {
+        return javaClass.getResourceAsStream("/mixfile_static/${path}")
+    }
 
     abstract suspend fun genDefaultImage(): ByteArray
 
