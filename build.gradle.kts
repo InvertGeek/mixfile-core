@@ -7,7 +7,7 @@ plugins {
     `maven-publish`
     `java-library`
 }
-val projectVersion = "1.0.0"
+val projectVersion = "1.0.1"
 group = "com.donut.mixfile_core"
 version = projectVersion
 
