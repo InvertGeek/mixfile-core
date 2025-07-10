@@ -75,6 +75,7 @@ abstract class MixFileServer(
 
 
     fun start(wait: Boolean) {
+        server?.stop()
         serverPort = findAvailablePort(serverPort) ?: serverPort
         val fileServer = embeddedServer(factory = Netty, port = serverPort, watchPaths = emptyList()) {
             defaultModule()
