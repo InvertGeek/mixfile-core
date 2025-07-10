@@ -24,16 +24,6 @@ object A2Uploader : Uploader("线路A2") {
     private val domain =
         "d︆︈︇︄︇︄︇︀︇︃︃︊︂️︂️︇︇︇︇︇︇︂︎︇︇︆︊︇︈︂︎︆︃︆︎︂️wa".sCode
 
-    init {
-        //旧文件兼容
-        registerUrlTransform("A2") {
-            it.replace(
-                "CO︆︈︇︄︇︄︇︀︇︃︃︊︂️︂️︇︀︆︌︆︁︇︄︂︍︇︃︆︈︂︍︆︃︆️︆︍︆︍︇︅︆︎︆︉︇︄︇︉︂︍︇︀︇︂︆️︆︄︂︍︇︅︇︀︆︌︆️︆︁︆︄︂︍︇︅︆︇︆︃︂︎︆️︇︃︇︃︂︍︆︃︆︎︂︍︇︃︆︈︆︁︆︎︆︇︆︈︆︁︆︉︂︎︆︁︆︌︆︉︇︉︇︅︆︎︆︃︇︃︂︎︆︃︆️︆︍︂️gP".sCode,
-                "d5︆︈︇︄︇︄︇︀︇︃︃︊︂️︂️︇︅︇︀︆︌︆️︆︁︆︄︂︍︆︂︆︂︇︃︂︎︆︍︆︉︇︉︆️︇︅︇︃︆︈︆︅︂︎︆︃︆️︆︍︂️w3".sCode
-            )
-        }
-    }
-
     data class Token(
         val host: String,
         val accessid: String,

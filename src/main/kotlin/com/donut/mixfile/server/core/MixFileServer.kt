@@ -16,6 +16,10 @@ abstract class MixFileServer(
     var serverPort: Int = 4719,
 ) {
 
+    init {
+        initPatchTransforms()
+    }
+
 
     open val downloadTaskCount: Int = 5
     open val uploadTaskCount: Int = 10
