@@ -17,10 +17,7 @@ val MixFileServer.defaultModule: Application.() -> Unit
         install(CORS) {
             allowOrigins { true }
             anyHost()
-            allowMethod(HttpMethod.Options)
-            allowMethod(HttpMethod.Post)
-            allowMethod(HttpMethod.Get)
-            allowMethod(HttpMethod.Put)
+            anyMethod()
             allowHeader(HttpHeaders.AccessControlAllowOrigin)
             allowHeader(HttpHeaders.AccessControlAllowMethods)
             allowHeader(HttpHeaders.ContentType)
