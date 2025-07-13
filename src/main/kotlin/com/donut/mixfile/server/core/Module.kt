@@ -5,6 +5,7 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
+import io.ktor.server.plugins.defaultheaders.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -16,11 +17,17 @@ val MixFileServer.defaultModule: Application.() -> Unit
         }
         install(CORS) {
             allowOrigins { true }
+            allowHeaders { true }
             anyHost()
             anyMethod()
+            allowMethod(HttpMethod("PROPFIND"))
+            allowMethod(HttpMethod("MOVE"))
+            allowMethod(HttpMethod("MKCOL"))
+            allowMethod(HttpMethod("COPY"))
             allowHeader(HttpHeaders.AccessControlAllowOrigin)
             allowHeader(HttpHeaders.AccessControlAllowMethods)
             allowHeader(HttpHeaders.ContentType)
+            allowHeader(HttpHeaders.Authorization)
         }
         install(StatusPages) {
             exception<Throwable> { call, cause ->

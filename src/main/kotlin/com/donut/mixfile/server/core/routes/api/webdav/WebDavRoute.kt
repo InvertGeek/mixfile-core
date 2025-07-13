@@ -71,8 +71,15 @@ fun MixFileServer.getWebDAVRoute(): Route.() -> Unit {
             }
         })
         webdav("OPTIONS") {
+            fun getAllowHeader(): String {
+                val file = webDav.getFile(davPath) ?: return "OPTIONS, PUT, MKCOL"
+                if (file.isFolder) {
+                    return "OPTIONS, DELETE, PROPPATCH, COPY, MOVE, PROPFIND"
+                }
+                return "OPTIONS, GET, HEAD, POST, DELETE, COPY, MOVE, PROPFIND, PUT"
+            }
             call.response.apply {
-                header("Allow", "OPTIONS, DELETE, COPY, MOVE, PROPFIND")
+                header("Allow", getAllowHeader())
                 header("Dav", "1")
                 header("Ms-Author-Via", "DAV")
             }
