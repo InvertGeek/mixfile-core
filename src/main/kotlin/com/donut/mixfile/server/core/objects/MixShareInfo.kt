@@ -36,6 +36,8 @@ data class MixShareInfo(
         val ENCODER =
             BigIntBaseN(Alphabet.fromString("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"))
 
+        private val DEFAULT_PASSWORD = "123".hashMD5()
+
         fun fromString(string: String) = fromJson(dec(string))
 
         fun tryFromString(string: String) = try {
@@ -51,13 +53,13 @@ data class MixShareInfo(
 
         private fun enc(input: String): String {
             val bytes = input.encodeToByteArray()
-            val result = encryptAES(bytes, "123".hashMD5())
+            val result = encryptAES(bytes, DEFAULT_PASSWORD)
             return ENCODER.encode(result)
         }
 
         private fun dec(input: String): String {
             val bytes = ENCODER.decode(input)
-            val result = decryptAES(bytes, "123".hashMD5())
+            val result = decryptAES(bytes, DEFAULT_PASSWORD)
             return result!!.decodeToString()
         }
 

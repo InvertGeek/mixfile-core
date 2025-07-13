@@ -4,13 +4,15 @@ import com.alibaba.fastjson2.toJSONString
 import com.donut.mixfile.server.core.utils.compressGzip
 import io.ktor.http.*
 
+const val DEFAULT_CATEGORY = "默认"
+
 
 data class FileDataLog(
     val shareInfoData: String,
     val name: String,
     val size: Long,
     val time: Long = System.currentTimeMillis(),
-    private var category: String = "默认",
+    private var category: String = DEFAULT_CATEGORY,
 ) {
 
     init {
@@ -26,7 +28,7 @@ data class FileDataLog(
 
     private fun sanitizeCategory() {
         if (category.trim().isEmpty()) {
-            category = "默认"
+            category = DEFAULT_CATEGORY
         }
         category = category.take(20)
     }
