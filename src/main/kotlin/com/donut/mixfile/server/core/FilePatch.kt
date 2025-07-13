@@ -1,7 +1,10 @@
 package com.donut.mixfile.server.core
 
 import com.donut.mixfile.server.core.Uploader.Companion.registerUrlTransform
-import com.donut.mixfile.server.core.uploaders.sCode
+import com.donut.mixfile.server.core.utils.decodeHex
+
+val String.sCode: String
+    get() = decodeHex(this)
 
 fun initPatchTransforms() {
     //旧文件兼容

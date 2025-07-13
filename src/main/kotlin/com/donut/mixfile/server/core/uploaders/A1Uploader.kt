@@ -3,6 +3,7 @@ package com.donut.mixfile.server.core.uploaders
 import com.alibaba.fastjson2.JSONArray
 import com.alibaba.fastjson2.to
 import com.donut.mixfile.server.core.Uploader
+import com.donut.mixfile.server.core.sCode
 import com.donut.mixfile.server.core.utils.add
 import com.donut.mixfile.server.core.utils.fileFormHeaders
 import io.ktor.client.*

@@ -2,8 +2,8 @@ package com.donut.mixfile.server.core.uploaders
 
 import com.alibaba.fastjson2.to
 import com.donut.mixfile.server.core.Uploader
+import com.donut.mixfile.server.core.sCode
 import com.donut.mixfile.server.core.utils.add
-import com.donut.mixfile.server.core.utils.decodeHex
 import com.donut.mixfile.server.core.utils.fileFormHeaders
 import com.donut.mixfile.server.core.utils.genRandomString
 import io.ktor.client.*
@@ -13,10 +13,6 @@ import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-
-
-val String.sCode: String
-    get() = decodeHex(this)
 
 
 object A2Uploader : Uploader("线路A2") {

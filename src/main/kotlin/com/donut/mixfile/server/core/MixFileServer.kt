@@ -77,7 +77,7 @@ abstract class MixFileServer(
 
     open val webDav = WebDavManager()
 
-    fun stop(){
+    fun stop() {
         server?.stop()
     }
 
