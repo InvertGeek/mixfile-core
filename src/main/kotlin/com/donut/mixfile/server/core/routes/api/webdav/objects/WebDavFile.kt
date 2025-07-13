@@ -38,7 +38,7 @@ data class WebDavFile(
 
     fun getName() = name
 
-    fun sanitizeName() {
+    private fun sanitizeName() {
         name = name.trim().sanitizeFileName()
     }
 

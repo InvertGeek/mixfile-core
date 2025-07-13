@@ -24,7 +24,7 @@ data class FileDataLog(
         sanitizeCategory()
     }
 
-    fun sanitizeCategory() {
+    private fun sanitizeCategory() {
         if (category.trim().isEmpty()) {
             category = "默认"
         }
