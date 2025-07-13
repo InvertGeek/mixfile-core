@@ -24,6 +24,7 @@ abstract class MixFileServer(
     open val downloadTaskCount: Int = 5
     open val uploadTaskCount: Int = 10
     open val uploadRetryCount: Int = 10
+    
     var server: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>? = null
         private set
 
