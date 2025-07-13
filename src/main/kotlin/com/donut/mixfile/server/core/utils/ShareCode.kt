@@ -56,17 +56,19 @@ private val encodeMap = run {
     map
 }
 
+const val MIXFILE_SCHEME = "mf://"
+
 fun MixShareInfo.shareCode(useShortCode: Boolean): String {
     if (useShortCode) {
-        return "mf://${encodeHex(this.toString())}${
+        return "${MIXFILE_SCHEME}${encodeHex(this.toString())}${
             this.toString().take(8)
         }"
     }
-    return "mf://$this"
+    return "${MIXFILE_SCHEME}$this"
 }
 
 fun parseShareCode(code: String): MixShareInfo? {
-    val mf = code.substringAfter("mf://")
+    val mf = code.substringAfter(MIXFILE_SCHEME)
     val decoded = decodeHex(mf)
     val parsed = MixShareInfo.tryFromString(decoded) ?: MixShareInfo.tryFromString(mf)
     return parsed
