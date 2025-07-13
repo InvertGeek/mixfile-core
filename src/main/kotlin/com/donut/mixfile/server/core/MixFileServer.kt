@@ -30,7 +30,6 @@ abstract class MixFileServer(
 
     open val chunkSize = 1.mb
 
-
     open val password: String = ""
 
     open val extendModule: Application.() -> Unit = {}
@@ -77,6 +76,10 @@ abstract class MixFileServer(
     }
 
     open val webDav = WebDavManager()
+
+    fun stop(){
+        server?.stop()
+    }
 
 
     fun start(wait: Boolean) {
