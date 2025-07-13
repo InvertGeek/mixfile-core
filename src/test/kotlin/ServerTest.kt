@@ -2,7 +2,6 @@ import com.donut.mixfile.server.core.MixFileServer
 import com.donut.mixfile.server.core.Uploader
 import com.donut.mixfile.server.core.uploaders.A2Uploader
 import com.donut.mixfile.server.core.utils.resolveMixShareInfo
-import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
 @OptIn(ExperimentalEncodingApi::class)
@@ -25,11 +24,6 @@ fun main() {
 
         override fun getUploader(): Uploader {
             return A2Uploader
-        }
-
-        override suspend fun genDefaultImage(): ByteArray {
-            //固定返回1像素gif,最小尺寸
-            return Base64.decode("R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=")
         }
 
     }

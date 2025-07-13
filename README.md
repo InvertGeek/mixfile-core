@@ -32,3 +32,6 @@ https://github.com/InvertGeek/mixfile-core/blob/main/src/test/kotlin/ServerTest.
 https://github.com/InvertGeek/mixfilecli/blob/master/src/main/kotlin/com/donut/mixfilecli/Application.kt 
 
 https://github.com/InvertGeek/MixMessage/blob/master/app/src/main/java/com/donut/mixmessage/util/mixfile/MixFileServer.kt
+
+### Java(Api支持有限)
+https://github.com/InvertGeek/mixfile-core/blob/main/src/test/java/ServerTestJava.java

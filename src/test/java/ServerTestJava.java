@@ -2,10 +2,7 @@ import com.donut.mixfile.server.core.MixFileServer;
 import com.donut.mixfile.server.core.Uploader;
 import com.donut.mixfile.server.core.objects.MixShareInfo;
 import com.donut.mixfile.server.core.uploaders.A2Uploader;
-import kotlin.coroutines.Continuation;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Base64;
 
 import static com.donut.mixfile.server.core.utils.ShareCodeKt.resolveMixShareInfo;
 
@@ -38,11 +35,6 @@ public class ServerTestJava {
                 return A2Uploader.INSTANCE;
             }
 
-
-            @Override
-            public Object genDefaultImage(@NotNull Continuation<? super byte[]> $completion) {
-                return Base64.getDecoder().decode("R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=");
-            }
 
         };
 

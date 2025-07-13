@@ -9,6 +9,7 @@ import com.donut.mixfile.server.core.utils.findAvailablePort
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import io.ktor.util.*
 import java.io.InputStream
 
 
@@ -42,7 +43,9 @@ abstract class MixFileServer(
         return javaClass.getResourceAsStream("/mixfile_static/${path}")
     }
 
-    abstract suspend fun genDefaultImage(): ByteArray
+    // 默认返回1像素GIF，最小尺寸
+    open suspend fun genDefaultImage(): ByteArray =
+        "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=".decodeBase64Bytes()
 
     open suspend fun getFileHistory(): String = "[]"
 
