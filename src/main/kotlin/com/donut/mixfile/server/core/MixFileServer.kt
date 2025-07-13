@@ -44,7 +44,7 @@ abstract class MixFileServer(
 
     abstract suspend fun genDefaultImage(): ByteArray
 
-    abstract suspend fun getFileHistory(): String
+    open suspend fun getFileHistory(): String = "[]"
 
     open val httpClient = defaultClient
 
@@ -87,6 +87,7 @@ abstract class MixFileServer(
         serverPort = findAvailablePort(serverPort) ?: serverPort
         val fileServer = embeddedServer(factory = Netty, port = serverPort, watchPaths = emptyList()) {
             defaultModule()
+            extendModule()
         }
         server = fileServer
         fileServer.start(wait = wait)

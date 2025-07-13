@@ -32,10 +32,6 @@ fun main() {
             return Base64.decode("R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=")
         }
 
-        override suspend fun getFileHistory(): String {
-            return "[]"
-        }
-
     }
 
     val shareInfo =
