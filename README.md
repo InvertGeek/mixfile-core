@@ -29,7 +29,6 @@ https://jitpack.io/#InvertGeek/mixfile-core
 ```properties
 # mixfile
 -keep class io.netty.** {*;}
--dontwarn com.google.android.exoplayer2.**
 -dontwarn io.netty.internal.tcnative.AsyncSSLPrivateKeyMethod
 -dontwarn io.netty.internal.tcnative.AsyncTask
 -dontwarn io.netty.internal.tcnative.Buffer
