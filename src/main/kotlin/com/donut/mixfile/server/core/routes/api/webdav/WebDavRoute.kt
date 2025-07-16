@@ -1,19 +1,24 @@
 package com.donut.mixfile.server.core.routes.api.webdav
 
-import com.alibaba.fastjson2.into
+
 import com.donut.mixfile.server.core.MixFileServer
 import com.donut.mixfile.server.core.interceptCall
 import com.donut.mixfile.server.core.objects.FileDataLog
 import com.donut.mixfile.server.core.objects.MixShareInfo
+import com.donut.mixfile.server.core.objects.WebDavFile
 import com.donut.mixfile.server.core.routes.api.respondMixFile
 import com.donut.mixfile.server.core.routes.api.uploadFile
-import com.donut.mixfile.server.core.routes.api.webdav.objects.*
+import com.donut.mixfile.server.core.routes.api.webdav.objects.WebDavManager
+import com.donut.mixfile.server.core.routes.api.webdav.objects.normalPath
+import com.donut.mixfile.server.core.routes.api.webdav.objects.parentPath
+import com.donut.mixfile.server.core.routes.api.webdav.objects.pathFileName
 import com.donut.mixfile.server.core.utils.decompressGzip
 import com.donut.mixfile.server.core.utils.extensions.decodedPath
 import com.donut.mixfile.server.core.utils.extensions.mb
 import com.donut.mixfile.server.core.utils.extensions.paramPath
 import com.donut.mixfile.server.core.utils.extensions.routePrefix
 import com.donut.mixfile.server.core.utils.getHeader
+import com.donut.mixfile.server.core.utils.parseJsonObject
 import com.donut.mixfile.server.core.utils.resolveMixShareInfo
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -145,7 +150,7 @@ fun MixFileServer.getWebDAVRoute(): Route.() -> Unit {
                 if (davFileName.endsWith(".mix_list")) {
                     val dataLogList = decompressGzip(
                         receiveBytes(50.mb)
-                    ).into<List<FileDataLog>>()
+                    ).parseJsonObject<List<FileDataLog>>()
                     webDav.importMixList(dataLogList, davParentPath)
                     call.respond(HttpStatusCode.Created)
                     webDav.saveData()

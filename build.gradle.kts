@@ -2,8 +2,9 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     java // 确保应用了 Java 插件
-    kotlin("jvm") version "2.1.20"
-    id("io.ktor.plugin") version "3.1.2"
+    kotlin("jvm") version "2.2.0"
+    id("io.ktor.plugin") version "3.2.2"
+    kotlin("plugin.serialization") version "2.2.0"
     `maven-publish`
     `java-library`
 }
@@ -58,7 +59,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("com.alibaba.fastjson2:fastjson2-kotlin:2.0.56")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
     implementation("io.ktor:ktor-client-core")
     implementation("io.ktor:ktor-client-okhttp")
     implementation("io.ktor:ktor-client-logging")

@@ -1,12 +1,14 @@
 package com.donut.mixfile.server.core.objects
 
-import com.alibaba.fastjson2.toJSONString
+
 import com.donut.mixfile.server.core.utils.compressGzip
+import com.donut.mixfile.server.core.utils.toJsonString
 import io.ktor.http.*
+import kotlinx.serialization.Serializable
 
 const val DEFAULT_CATEGORY = "默认"
 
-
+@Serializable
 data class FileDataLog(
     val shareInfoData: String,
     val name: String,
@@ -61,7 +63,7 @@ val FileDataLog.isImage get() = this.contentType.contentEquals("image")
 val FileDataLog.isVideo get() = this.contentType.contentEquals("video")
 
 fun Collection<FileDataLog>.toByteArray(): ByteArray {
-    val strData = this.toJSONString()
+    val strData = this.toJsonString()
     val compressedData = compressGzip(strData)
     return compressedData
 }

@@ -1,10 +1,10 @@
 package com.donut.mixfile.server.core.routes.api
 
-import com.alibaba.fastjson2.toJSONString
 import com.donut.mixfile.server.core.MixFileServer
 import com.donut.mixfile.server.core.mixBasicAuth
 import com.donut.mixfile.server.core.routes.api.webdav.getWebDAVRoute
 import com.donut.mixfile.server.core.utils.resolveMixShareInfo
+import com.donut.mixfile.server.core.utils.toJsonString
 import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -37,10 +37,11 @@ fun MixFileServer.getAPIRoute(): Route.() -> Unit {
                 )
                 return@get
             }
-            call.respondText(object {
-                val name = shareInfo.fileName
-                val size = shareInfo.fileSize
-            }.toJSONString())
+            val map = mapOf(
+                "name" to shareInfo.fileName,
+                "size" to shareInfo.fileSize
+            )
+            call.respondText(map.toJsonString())
         }
     }
 }

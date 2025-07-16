@@ -1,28 +1,25 @@
-package com.donut.mixfile.server.core.routes.api.webdav.objects
+package com.donut.mixfile.server.core.objects
 
-import com.alibaba.fastjson2.annotation.JSONField
-import com.donut.mixfile.server.core.objects.FileDataLog
-import com.donut.mixfile.server.core.utils.hashSHA256
-import com.donut.mixfile.server.core.utils.parseFileMimeType
-import com.donut.mixfile.server.core.utils.sanitizeFileName
-import com.donut.mixfile.server.core.utils.toHex
+import com.donut.mixfile.server.core.routes.api.webdav.objects.normalPath
+import com.donut.mixfile.server.core.routes.api.webdav.objects.xml
+import com.donut.mixfile.server.core.utils.*
 import io.ktor.http.*
+import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.set
 
 
 fun WebDavFile.toDataLog() = FileDataLog(shareInfoData, getName(), size)
 
+@Serializable
 // WebDAV 文件类，包含额外属性
 data class WebDavFile(
     private var name: String,
     val size: Long = 0,
     val shareInfoData: String = "",
     val isFolder: Boolean = false,
+    @Serializable(with = ConcurrentHashMapSerializer::class)
     val files: ConcurrentHashMap<String, WebDavFile> = ConcurrentHashMap(),
     var lastModified: Long = System.currentTimeMillis()
 ) {
@@ -74,7 +71,6 @@ data class WebDavFile(
     fun listFiles() = files.values.toList()
 
 
-    @JSONField(serialize = false)
     fun getLastModifiedFormatted(): String {
         val sdf = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US)
         sdf.timeZone = TimeZone.getTimeZone("GMT")

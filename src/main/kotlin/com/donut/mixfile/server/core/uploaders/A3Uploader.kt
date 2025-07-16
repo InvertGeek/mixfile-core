@@ -1,13 +1,14 @@
 package com.donut.mixfile.server.core.uploaders
 
-import com.alibaba.fastjson2.JSONObject
-import com.alibaba.fastjson2.to
 import com.donut.mixfile.server.core.Uploader
 import com.donut.mixfile.server.core.utils.add
 import com.donut.mixfile.server.core.utils.fileFormHeaders
+import com.donut.mixfile.server.core.utils.getString
+import com.donut.mixfile.server.core.utils.parseJsonObject
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.forms.*
+import kotlinx.serialization.json.JsonObject
 
 object A3Uploader : Uploader("线路A3") {
 
@@ -21,8 +22,8 @@ object A3Uploader : Uploader("线路A3") {
                 formData {
                     add("media", fileData, fileFormHeaders())
                 }) {
-            }.body<String>().to<JSONObject>()
+            }.body<String>().parseJsonObject<JsonObject>()
 
-        return result.getString("url")
+        return result.getString("url") ?: throw Error("上传失败")
     }
 }

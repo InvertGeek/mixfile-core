@@ -1,11 +1,11 @@
 package com.donut.mixfile.server.core.uploaders
 
-import com.alibaba.fastjson2.to
 import com.donut.mixfile.server.core.Uploader
 import com.donut.mixfile.server.core.sCode
 import com.donut.mixfile.server.core.utils.add
 import com.donut.mixfile.server.core.utils.fileFormHeaders
 import com.donut.mixfile.server.core.utils.genRandomString
+import com.donut.mixfile.server.core.utils.parseJsonObject
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -13,6 +13,7 @@ import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.serialization.Serializable
 
 
 object A2Uploader : Uploader("线路A2") {
@@ -20,6 +21,7 @@ object A2Uploader : Uploader("线路A2") {
     private val domain =
         "d︆︈︇︄︇︄︇︀︇︃︃︊︂️︂️︇︇︇︇︇︇︂︎︇︇︆︊︇︈︂︎︆︃︆︎︂️wa".sCode
 
+    @Serializable
     data class Token(
         val host: String,
         val accessid: String,
@@ -47,7 +49,7 @@ object A2Uploader : Uploader("线路A2") {
             if (!response.status.isSuccess()) {
                 throw Exception("上传失败")
             }
-            val data: Token = response.body<String>().to()
+            val data: Token = response.body<String>().parseJsonObject()
             tokenCache = data
             tokenCacheTime = System.currentTimeMillis()
             return data

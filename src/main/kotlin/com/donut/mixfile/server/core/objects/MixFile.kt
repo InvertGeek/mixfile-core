@@ -1,27 +1,24 @@
 package com.donut.mixfile.server.core.objects
 
 
-import com.alibaba.fastjson2.annotation.JSONField
-import com.alibaba.fastjson2.to
-import com.alibaba.fastjson2.toJSONString
-import com.donut.mixfile.server.core.utils.compressGzip
-import com.donut.mixfile.server.core.utils.decompressGzip
-import com.donut.mixfile.server.core.utils.hashSHA256
+import com.donut.mixfile.server.core.utils.*
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
 fun ByteArray.hashMixSHA256() = MixShareInfo.ENCODER.encode(hashSHA256())
 
-
+@Serializable
 data class MixFile(
-    @JSONField(name = "chunk_size") val chunkSize: Int,
-    @JSONField(name = "file_size") val fileSize: Long,
-    @JSONField(name = "version") val version: Long,
-    @JSONField(name = "file_list") val fileList: List<String>,
+    @SerialName("chunk_size") val chunkSize: Int,
+    @SerialName("file_size") val fileSize: Long,
+    @SerialName("version") val version: Long,
+    @SerialName("file_list") val fileList: List<String>,
 ) {
 
     companion object {
         fun fromBytes(data: ByteArray): MixFile =
-            decompressGzip(data).to()
+            decompressGzip(data).parseJsonObject()
     }
 
     fun getFileListByStartRange(startRange: Long): List<Pair<String, Int>> {
@@ -35,6 +32,6 @@ data class MixFile(
     }
 
 
-    fun toBytes() = compressGzip(this.toJSONString())
+    fun toBytes() = compressGzip(this.toJsonString())
 
 }

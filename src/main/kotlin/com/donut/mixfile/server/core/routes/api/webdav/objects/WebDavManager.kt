@@ -1,11 +1,9 @@
 package com.donut.mixfile.server.core.routes.api.webdav.objects
 
-import com.alibaba.fastjson2.into
-import com.alibaba.fastjson2.toJSONString
+
 import com.donut.mixfile.server.core.objects.FileDataLog
-import com.donut.mixfile.server.core.utils.compressGzip
-import com.donut.mixfile.server.core.utils.decompressGzip
-import com.donut.mixfile.server.core.utils.resolveMixShareInfo
+import com.donut.mixfile.server.core.objects.WebDavFile
+import com.donut.mixfile.server.core.utils.*
 import java.util.concurrent.ConcurrentHashMap
 
 
@@ -19,7 +17,7 @@ open class WebDavManager {
     var loaded = true
 
     fun dataToBytes(data: WebDavFile = WEBDAV_DATA) =
-        compressGzip(VERSION_PREFIX + data.toJSONString())
+        compressGzip(VERSION_PREFIX + data.toJsonString())
 
     fun loadDataFromBytes(data: ByteArray) {
         WEBDAV_DATA = parseDataFromBytes(data)
@@ -28,7 +26,7 @@ open class WebDavManager {
     fun parseDataFromBytes(data: ByteArray): WebDavFile {
         val dataStr = decompressGzip(data)
         if (dataStr.startsWith(VERSION_PREFIX)) {
-            return dataStr.substring(VERSION_PREFIX.length).into()
+            return dataStr.substring(VERSION_PREFIX.length).parseJsonObject()
         }
         return loadLegacyData(dataStr)
     }
@@ -49,7 +47,7 @@ open class WebDavManager {
 
 
     private fun loadLegacyData(data: String): WebDavFile {
-        val davData: ConcurrentHashMap<String, MutableSet<WebDavFile>> = data.into()
+        val davData: ConcurrentHashMap<String, MutableSet<WebDavFile>> = data.parseJsonObject()
         val rootFile = WebDavFile("root", isFolder = true)
         davData.forEach { (path, fileList) ->
             if (path.isBlank()) return@forEach

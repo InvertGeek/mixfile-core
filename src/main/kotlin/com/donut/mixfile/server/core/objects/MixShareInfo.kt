@@ -1,8 +1,5 @@
 package com.donut.mixfile.server.core.objects
 
-import com.alibaba.fastjson2.annotation.JSONField
-import com.alibaba.fastjson2.to
-import com.alibaba.fastjson2.toJSONString
 import com.donut.mixfile.server.core.Uploader
 import com.donut.mixfile.server.core.aes.decryptAES
 import com.donut.mixfile.server.core.aes.encryptAES
@@ -11,24 +8,28 @@ import com.donut.mixfile.server.core.utils.basen.BigIntBaseN
 import com.donut.mixfile.server.core.utils.extensions.mb
 import com.donut.mixfile.server.core.utils.hashMD5
 import com.donut.mixfile.server.core.utils.parseFileMimeType
+import com.donut.mixfile.server.core.utils.parseJsonObject
+import com.donut.mixfile.server.core.utils.toJsonString
 import io.ktor.client.*
 import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.utils.io.*
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 data class MixShareInfo(
-    @JSONField(name = "f") val fileName: String,
-    @JSONField(name = "s") val fileSize: Long,
-    @JSONField(name = "h") val headSize: Int,
-    @JSONField(name = "u") val url: String,
-    @JSONField(name = "k") val key: String,
-    @JSONField(name = "r") val referer: String,
+    @SerialName("f") val fileName: String,
+    @SerialName("s") val fileSize: Long,
+    @SerialName("h") val headSize: Int,
+    @SerialName("u") val url: String,
+    @SerialName("k") val key: String,
+    @SerialName("r") val referer: String,
 ) {
 
-    @JSONField(serialize = false)
+    @kotlinx.serialization.Transient
     var cachedCode: String? = null
 
     companion object {
@@ -49,7 +50,7 @@ data class MixShareInfo(
         }
 
         private fun fromJson(json: String): MixShareInfo =
-            json.to()
+            json.parseJsonObject()
 
         private fun enc(input: String): String {
             val bytes = input.encodeToByteArray()
@@ -81,7 +82,7 @@ data class MixShareInfo(
     }
 
 
-    private fun toJson(): String = this.toJSONString()
+    private fun toJson(): String = this.toJsonString()
 
     suspend fun fetchFile(
         url: String,
