@@ -8,6 +8,8 @@ import com.donut.mixfile.server.core.utils.toJsonString
 import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
 fun MixFileServer.getAPIRoute(): Route.() -> Unit {
     return {
@@ -24,12 +26,15 @@ fun MixFileServer.getAPIRoute(): Route.() -> Unit {
         }
 
         get("/file_info") {
+
             val shareInfoStr = call.parameters["s"]
             if (shareInfoStr == null) {
                 call.respondText("分享信息为空", status = HttpStatusCode.InternalServerError)
                 return@get
             }
+
             val shareInfo = resolveMixShareInfo(shareInfoStr)
+
             if (shareInfo == null) {
                 call.respondText(
                     "分享信息解析失败",
@@ -37,11 +42,13 @@ fun MixFileServer.getAPIRoute(): Route.() -> Unit {
                 )
                 return@get
             }
-            val map = mapOf(
-                "name" to shareInfo.fileName,
-                "size" to shareInfo.fileSize
-            )
-            call.respondText(map.toJsonString())
+
+            val jsonObject = buildJsonObject {
+                put("name", shareInfo.fileName)
+                put("size", shareInfo.fileSize)
+            }
+
+            call.respondText(jsonObject.toJsonString())
         }
     }
 }
