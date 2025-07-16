@@ -15,6 +15,7 @@ import java.io.InputStream
 
 abstract class MixFileServer(
     var serverPort: Int = 4719,
+    val host: String = "0.0.0.0"
 ) {
 
     init {
@@ -88,7 +89,12 @@ abstract class MixFileServer(
     fun start(wait: Boolean) {
         server?.stop()
         serverPort = findAvailablePort(serverPort) ?: serverPort
-        val fileServer = embeddedServer(factory = Netty, port = serverPort, watchPaths = emptyList()) {
+        val fileServer = embeddedServer(
+            factory = Netty,
+            host = host,
+            port = serverPort,
+            watchPaths = emptyList()
+        ) {
             defaultModule()
             extendModule()
         }

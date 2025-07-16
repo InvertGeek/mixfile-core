@@ -8,7 +8,7 @@ import static com.donut.mixfile.server.core.utils.ShareCodeKt.resolveMixShareInf
 
 public class ServerTestJava {
     public static void main(String[] args) {
-        MixFileServer server = new MixFileServer(8084) {
+        MixFileServer server = new MixFileServer(8084, "0.0.0.0") {
 
             @Override
             public int getDownloadTaskCount() {
