@@ -56,7 +56,7 @@ abstract class Uploader(val name: String) {
                     mixFileServer.httpClient
                 )
                 if (!isValidURL(url)) {
-                    throw Exception("url格式错误")
+                    throw Exception("url格式错误: ${url}")
                 }
                 URLBuilder(url).apply {
                     fragment = fileData.hashMixSHA256()

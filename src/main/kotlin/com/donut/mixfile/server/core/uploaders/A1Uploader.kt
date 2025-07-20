@@ -26,8 +26,7 @@ object A1Uploader : Uploader("线路A1") {
                 formData {
                     add("flag", "")
                     add("FileUploadForm[file]", fileData, fileFormHeaders())
-                }) {
-            }.body<String>().parseJsonObject<JsonArray>()
+                }).body<String>().parseJsonObject<JsonArray>()
         if (result.isEmpty()) {
             throw Exception("上传失败")
         }

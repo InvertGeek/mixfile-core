@@ -28,5 +28,5 @@ private val client = HttpClient(OkHttp) {
     }
 }
 
-val MixFileServer.defaultClient
+val defaultClient
     get() = client

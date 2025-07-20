@@ -192,6 +192,7 @@ suspend fun <T> retry(
         try {
             return block()
         } catch (e: Exception) {
+            //取消后立即停止重试
             if (e is CancellationException) throw e
             delay(delay)
         }

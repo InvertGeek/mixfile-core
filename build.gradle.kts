@@ -35,23 +35,24 @@ publishing {
     }
 
     repositories {
+        google()
         mavenLocal() // 发布到本地仓库
     }
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
+        languageVersion.set(JavaLanguageVersion.of(11))
     }
 }
 
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_1_8)
+        jvmTarget.set(JvmTarget.JVM_11)
     }
 }
 
@@ -59,6 +60,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 
 dependencies {
     testImplementation(kotlin("test"))
+    implementation("io.github.dokar3:quickjs-kt:1.0.0-alpha13")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
     implementation("io.ktor:ktor-client-core")
     implementation("io.ktor:ktor-client-okhttp")
@@ -70,6 +72,7 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages")
     implementation("io.ktor:ktor-server-cors")
     implementation("io.ktor:ktor-server-content-negotiation")
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 
