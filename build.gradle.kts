@@ -72,7 +72,6 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages")
     implementation("io.ktor:ktor-server-cors")
     implementation("io.ktor:ktor-server-content-negotiation")
-    implementation(kotlin("stdlib-jdk8"))
 }
 
 
