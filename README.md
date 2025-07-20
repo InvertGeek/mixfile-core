@@ -29,20 +29,8 @@ https://jitpack.io/#InvertGeek/mixfile-core
 ```properties
 # mixfile
 -keep class io.netty.** {*;}
--dontwarn io.netty.internal.tcnative.AsyncSSLPrivateKeyMethod
--dontwarn io.netty.internal.tcnative.AsyncTask
--dontwarn io.netty.internal.tcnative.Buffer
--dontwarn io.netty.internal.tcnative.CertificateCallback
--dontwarn io.netty.internal.tcnative.CertificateCompressionAlgo
--dontwarn io.netty.internal.tcnative.CertificateVerifier
--dontwarn io.netty.internal.tcnative.Library
--dontwarn io.netty.internal.tcnative.SSL
--dontwarn io.netty.internal.tcnative.SSLContext
--dontwarn io.netty.internal.tcnative.SSLPrivateKeyMethod
--dontwarn io.netty.internal.tcnative.SSLSessionCache
--dontwarn io.netty.internal.tcnative.SessionTicketKey
--dontwarn io.netty.internal.tcnative.SniHostNameMatcher
--dontwarn io.netty.pkitesting.**
+-dontwarn io.netty.**
+-dontwarn java.beans.**
 ```
 
 
