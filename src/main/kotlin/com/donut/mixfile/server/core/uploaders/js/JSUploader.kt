@@ -9,7 +9,9 @@ import com.donut.mixfile.server.core.defaultClient
 import io.ktor.client.*
 import io.ktor.util.*
 
-class JSUploader(name: String, val scriptCode: String, private var refererValue: String) : Uploader(name) {
+class JSUploader(name: String, val scriptCode: String) : Uploader(name) {
+
+    private var refererValue: String = ""
 
     override val referer
         get() = this.refererValue
