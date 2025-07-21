@@ -17,10 +17,13 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.util.*
+import kotlinx.coroutines.asCoroutineDispatcher
+import java.util.concurrent.Executors
 
+val quickJsDispatcher = Executors.newFixedThreadPool(4).asCoroutineDispatcher()
 
 suspend fun runScript(code: String, client: HttpClient, variables: QuickJs.() -> Unit = {}): String {
-    quickJs {
+    quickJs(quickJsDispatcher) {
         variables()
         defaultVariables(client)()
         return evaluate<String>(code)
