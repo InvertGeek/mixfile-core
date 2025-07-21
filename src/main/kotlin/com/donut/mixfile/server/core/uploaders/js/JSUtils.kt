@@ -17,14 +17,11 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.util.*
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.newSingleThreadContext
 
-@OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
-val dispatcher = newSingleThreadContext("Dispathcer")
+
 suspend fun runScript(code: String, client: HttpClient, variables: QuickJs.() -> Unit = {}): String {
-    quickJs(dispatcher) {
+    quickJs {
+        quickJs { }
         variables()
         defaultVariables(client)()
         return evaluate<String>(code)
