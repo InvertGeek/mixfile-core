@@ -108,8 +108,9 @@ data class MixShareInfo(
         }.execute {
             val contentLength = it.contentLength() ?: 0
             // iv + ghash 各96位,12字节,共24字节
-            if (contentLength > (limit + headSize + 24)) {
-                throw Exception("分片文件过大")
+            val overSize = contentLength - (limit + headSize + 24)
+            if (overSize > 0) {
+                throw Exception("分片文件过大: ${overSize} bytes")
             }
             val channel = it.bodyAsChannel()
             channel.discard(headSize.toLong())
@@ -119,7 +120,7 @@ data class MixShareInfo(
         if (hash.isNotEmpty()) {
             val currentHash = result.hashMixSHA256()
             if (!currentHash.contentEquals(hash)) {
-                throw Exception("文件遭到篡改")
+                throw Exception("文件遭到篡改: ${currentHash} != ${hash}")
             }
         }
         return result

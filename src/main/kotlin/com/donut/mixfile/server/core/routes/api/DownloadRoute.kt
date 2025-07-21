@@ -58,6 +58,7 @@ suspend fun MixFileServer.respondMixFile(call: ApplicationCall, shareInfo: MixSh
 
     var contentLength = shareInfo.fileSize
     val range: LongRange? = call.request.ranges()?.mergeToSingle(contentLength)
+
     call.response.apply {
         header(
             "Content-Disposition",
@@ -65,7 +66,9 @@ suspend fun MixFileServer.respondMixFile(call: ApplicationCall, shareInfo: MixSh
         )
         header("x-mix-code", shareInfo.toString())
     }
+
     var fileList = mixFile.fileList.map { it to 0 }
+
     if (range != null) {
         fileList = mixFile.getFileListByStartRange(range.first)
         call.response.apply {
@@ -75,6 +78,7 @@ suspend fun MixFileServer.respondMixFile(call: ApplicationCall, shareInfo: MixSh
         }
         contentLength = mixFile.fileSize - range.first
     }
+
     call.respondBytesWriter(
         contentType = name.parseFileMimeType(),
         contentLength = contentLength
