@@ -3,6 +3,7 @@ package com.donut.mixfile.server.core.uploaders.js
 import com.dokar.quickjs.ExperimentalQuickJsApi
 import com.dokar.quickjs.QuickJs
 import com.dokar.quickjs.alias.asyncFunc
+import com.dokar.quickjs.alias.def
 import com.dokar.quickjs.alias.func
 import com.dokar.quickjs.binding.JsObject
 import com.dokar.quickjs.quickJs
@@ -29,6 +30,13 @@ suspend fun runScript(code: String, client: HttpClient, variables: QuickJs.() ->
 @OptIn(ExperimentalQuickJsApi::class)
 fun defaultVariables(client: HttpClient): QuickJs.() -> Unit =
     {
+
+        def("console") {
+            func("log") {
+                println(it.joinToString(" "))
+            }
+        }
+
         func<String>("hash") {
             val algorithm = it.first().toString().uppercase()
             val data = it[1].toString().decodeBase64Bytes()
