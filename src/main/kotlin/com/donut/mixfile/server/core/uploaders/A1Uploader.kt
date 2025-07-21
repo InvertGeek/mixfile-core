@@ -19,7 +19,7 @@ object A1Uploader : Uploader("线路A1") {
         get() = "wf︆︈︇︄︇︄︇︀︇︃︃︊︂️︂️︆︋︆︆︂︎︆︆︆︌︆︁︇︃︆︈︂︎︆︃︆︎︂️ey".sCode
 
 
-    override suspend fun doUpload(fileData: ByteArray, client: HttpClient): String {
+    override suspend fun doUpload(fileData: ByteArray, client: HttpClient, headSize: Int): String {
         val result =
             client.submitFormWithBinaryData(
                 "${referer}service/upload",

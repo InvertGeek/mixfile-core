@@ -15,7 +15,7 @@ object A3Uploader : Uploader("线路A3") {
     override val referer: String
         get() = ""
 
-    override suspend fun doUpload(fileData: ByteArray, client: HttpClient): String {
+    override suspend fun doUpload(fileData: ByteArray, client: HttpClient, headSize: Int): String {
         val result =
             client.submitFormWithBinaryData(
                 "https://chatbot.weixin.qq.com/weixinh5/webapp/pfnYYEumBeFN7Yb3TAxwrabYVOa4R9/cos/upload",

@@ -56,7 +56,7 @@ object A2Uploader : Uploader("线路A2") {
         }
     }
 
-    override suspend fun doUpload(fileData: ByteArray, client: HttpClient): String {
+    override suspend fun doUpload(fileData: ByteArray, client: HttpClient, headSize: Int): String {
         val token = getToken(client)
 
         val key = "${token.dir}${genRandomString()}"

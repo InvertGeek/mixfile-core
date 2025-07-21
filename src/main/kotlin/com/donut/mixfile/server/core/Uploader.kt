@@ -11,7 +11,7 @@ abstract class Uploader(val name: String) {
 
     open val referer = ""
 
-    abstract suspend fun doUpload(fileData: ByteArray, client: HttpClient): String
+    abstract suspend fun doUpload(fileData: ByteArray, client: HttpClient, headSize: Int): String
 
     companion object {
         val urlTransforms = mutableMapOf<String, (String) -> String>()
@@ -53,7 +53,8 @@ abstract class Uploader(val name: String) {
             try {
                 val url = doUpload(
                     encryptedData,
-                    mixFileServer.httpClient
+                    mixFileServer.httpClient,
+                    head.size
                 )
                 if (!isValidURL(url)) {
                     throw Exception("url格式错误: ${url}")

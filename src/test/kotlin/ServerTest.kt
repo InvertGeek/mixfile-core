@@ -1,6 +1,5 @@
 import com.donut.mixfile.server.core.MixFileServer
 import com.donut.mixfile.server.core.Uploader
-import com.donut.mixfile.server.core.uploaders.A1Uploader
 import com.donut.mixfile.server.core.uploaders.A2Uploader
 import com.donut.mixfile.server.core.utils.resolveMixShareInfo
 import kotlin.io.encoding.ExperimentalEncodingApi
