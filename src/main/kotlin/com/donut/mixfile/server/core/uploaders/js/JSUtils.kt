@@ -6,6 +6,7 @@ import com.dokar.quickjs.alias.asyncFunc
 import com.dokar.quickjs.alias.def
 import com.dokar.quickjs.alias.func
 import com.dokar.quickjs.binding.JsObject
+import com.dokar.quickjs.quickJs
 import com.donut.mixfile.server.core.utils.add
 import com.donut.mixfile.server.core.utils.encodeURL
 import com.donut.mixfile.server.core.utils.fileFormHeaders
@@ -16,21 +17,18 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.util.*
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.newSingleThreadContext
 
-
-val quickJs = QuickJs.create(Dispatchers.IO)
-
+@OptIn(ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
+val dispatcher = newSingleThreadContext("Dispathcer")
 suspend fun runScript(code: String, client: HttpClient, variables: QuickJs.() -> Unit = {}): String {
-    quickJs.variables()
-    defaultVariables(client)(quickJs)
-    return quickJs.evaluate<String>(code)
-
-//    quickJs {
-//        variables()
-//        defaultVariables(client)()
-//        return evaluate<String>(code)
-//    }
+    quickJs(dispatcher) {
+        variables()
+        defaultVariables(client)()
+        return evaluate<String>(code)
+    }
 }
 
 @OptIn(ExperimentalQuickJsApi::class)
