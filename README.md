@@ -29,6 +29,7 @@ https://jitpack.io/#InvertGeek/mixfile-core
 ```properties
 # mixfile
 -keep class io.netty.** {*;}
+-keep class kotlin.** {*;}
 -dontwarn io.netty.**
 -dontwarn java.beans.**
 ```
