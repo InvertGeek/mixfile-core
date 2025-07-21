@@ -2,10 +2,10 @@ package com.donut.mixfile.server.core.uploaders.js
 
 import com.dokar.quickjs.ExperimentalQuickJsApi
 import com.dokar.quickjs.QuickJs
+import com.dokar.quickjs.alias.asyncFunc
 import com.dokar.quickjs.alias.def
 import com.dokar.quickjs.alias.func
 import com.dokar.quickjs.binding.JsObject
-import com.dokar.quickjs.quickJs
 import com.donut.mixfile.server.core.utils.add
 import com.donut.mixfile.server.core.utils.encodeURL
 import com.donut.mixfile.server.core.utils.fileFormHeaders
@@ -16,15 +16,21 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.util.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
+
+
+val quickJs = QuickJs.create(Dispatchers.IO)
 
 suspend fun runScript(code: String, client: HttpClient, variables: QuickJs.() -> Unit = {}): String {
+    quickJs.variables()
+    defaultVariables(client)(quickJs)
+    return quickJs.evaluate<String>(code)
 
-    quickJs {
-        variables()
-        defaultVariables(client)()
-        return evaluate<String>(code)
-    }
+//    quickJs {
+//        variables()
+//        defaultVariables(client)()
+//        return evaluate<String>(code)
+//    }
 }
 
 @OptIn(ExperimentalQuickJsApi::class)
@@ -66,7 +72,7 @@ fun defaultVariables(client: HttpClient): QuickJs.() -> Unit =
             it.first().toString().decodeURLQueryComponent()
         }
 
-        func<String>("submitForm") { args ->
+        asyncFunc<String>("submitForm") { args ->
             val url = args.first().toString()
             val formValues = (args.getOrNull(1) as? JsObject) ?: JsObject(mapOf())
             val reqHeaders = (args.getOrNull(2) as? JsObject) ?: JsObject(mapOf())
@@ -81,33 +87,29 @@ fun defaultVariables(client: HttpClient): QuickJs.() -> Unit =
                     add(it.key, data)
                 }
             }
-            runBlocking {
-                client.submitFormWithBinaryData(
-                    url,
-                    reqForm
-                ) {
-                    reqHeaders.forEach {
-                        header(it.key, it.value)
-                    }
-                }.body<ByteArray>().encodeBase64()
-            }
+            client.submitFormWithBinaryData(
+                url,
+                reqForm
+            ) {
+                reqHeaders.forEach {
+                    header(it.key, it.value)
+                }
+            }.body<ByteArray>().encodeBase64()
         }
 
-        func<String>("http") { args ->
+        asyncFunc<String>("http") { args ->
             val reqMethod = args.getOrNull(0) as? String ?: ""
             val reqUrl = args.getOrNull(1) as? String ?: ""
             val reqBody = (args.getOrNull(2)?.toString() ?: "").decodeBase64Bytes()
             val reqHeaders = (args.getOrNull(3) as? JsObject) ?: JsObject(mapOf())
-            runBlocking {
-                client.request {
-                    method = HttpMethod(reqMethod.uppercase())
-                    url(reqUrl)
-                    reqHeaders.forEach {
-                        header(it.key, it.value)
-                    }
-                    setBody(reqBody)
-                }.body<ByteArray>().encodeBase64()
-            }
+            client.request {
+                method = HttpMethod(reqMethod.uppercase())
+                url(reqUrl)
+                reqHeaders.forEach {
+                    header(it.key, it.value)
+                }
+                setBody(reqBody)
+            }.body<ByteArray>().encodeBase64()
         }
 
 
