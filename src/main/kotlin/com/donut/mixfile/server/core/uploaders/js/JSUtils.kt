@@ -21,9 +21,13 @@ import kotlinx.coroutines.Dispatchers
 
 suspend fun runScript(code: String, client: HttpClient, variables: QuickJs.() -> Unit = {}): String {
     val runtime = QuickJs.create(Dispatchers.IO)
-    runtime.variables()
-    defaultVariables(client)(runtime)
-    return runtime.evaluate<String>(code)
+    try {
+        runtime.variables()
+        defaultVariables(client)(runtime)
+        return runtime.evaluate<String>(code)
+    } finally {
+        runtime.close()
+    }
 }
 
 @OptIn(ExperimentalQuickJsApi::class)
