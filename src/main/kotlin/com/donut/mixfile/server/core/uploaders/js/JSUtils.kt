@@ -17,14 +17,18 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.util.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
+val mutex = Mutex()
 
 suspend fun runScript(code: String, client: HttpClient, variables: QuickJs.() -> Unit = {}): String {
-    quickJs {
-        quickJs { }
-        variables()
-        defaultVariables(client)()
-        return evaluate<String>(code)
+    mutex.withLock {
+        quickJs {
+            variables()
+            defaultVariables(client)()
+            return evaluate<String>(code)
+        }
     }
 }
 
