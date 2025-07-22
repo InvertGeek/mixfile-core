@@ -98,7 +98,8 @@ fun getRhinoScope(context: Context, client: HttpClient): Scriptable {
                     })
                     return@forEach
                 }
-                add(key, data)
+                //处理 org.mozilla.javascript.ConsString
+                add(key, data.toString())
             }
         }
         runBlocking {
