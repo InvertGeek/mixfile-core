@@ -34,9 +34,9 @@ object A2Uploader : Uploader("线路A2") {
     override val referer: String
         get() = domain
 
-    var tokenCache: Token? = null
-    var tokenCacheTime: Long = 0
-    val tokenLock = Mutex()
+    private var tokenCache: Token? = null
+    private var tokenCacheTime: Long = 0
+    private val tokenLock = Mutex()
 
     private suspend fun getToken(client: HttpClient): Token {
         tokenLock.withLock {
@@ -74,6 +74,6 @@ object A2Uploader : Uploader("线路A2") {
             throw Exception("上传失败")
         }
 
-        return "${"a︆︈︇︄︇︄︇︀︇︃︃︊︂️︂️︇︀︇︅︆︂︆︎︆︅︇︇︆︆︇︂︂︎︇︀︆︁︇︀︆︅︇︂︆️︆︌︂︎︆︃︆︎︂️wa".sCode}/${key}"
+        return "${"a︆︈︇︄︇︄︇︀︇︃︃︊︂️︂️︇︀︇︅︆︂︆︎︆︅︇︇︆︆︇︂︂︎︇︀︆︁︇︀︆︅︇︂︆️︆︌︂︎︆︃︆︎︂️wa".sCode}${key}"
     }
 }
