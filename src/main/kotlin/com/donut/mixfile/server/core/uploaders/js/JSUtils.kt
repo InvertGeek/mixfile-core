@@ -1,5 +1,6 @@
 package com.donut.mixfile.server.core.uploaders.js
 
+import com.donut.mixfile.server.core.defaultClient
 import io.ktor.client.*
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.Scriptable
@@ -10,7 +11,7 @@ fun getContext(): Context = Context.enter().apply {
     languageVersion = Context.VERSION_ES6
 }
 
-fun runScript(code: String, client: HttpClient, variables: Scriptable.() -> Unit = {}): String {
+fun runScript(code: String, client: HttpClient = defaultClient, variables: Scriptable.() -> Unit = {}): String {
     val context = getContext()
     context.use {
         val scope = getRhinoScope(it, client)

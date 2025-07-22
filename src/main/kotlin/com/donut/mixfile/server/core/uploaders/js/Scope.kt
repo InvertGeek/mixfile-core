@@ -31,37 +31,44 @@ fun <T> Scriptable.putFunc(name: String, func: (args: Array<out Any>) -> T?) {
     })
 }
 
+private inline fun <reified T> Array<out Any?>.param(index: Int, default: T): T {
+    val param = this[index]
+    if (param is T) {
+        return param
+    }
+    return default
+}
+
+
 fun getRhinoScope(context: Context, client: HttpClient): Scriptable {
 
     val scope: Scriptable = context.initStandardObjects()
-
     scope.putFunc("hash") {
-        val algorithm = it.first().toString().uppercase()
+        val algorithm = it.param(0, "").uppercase()
         val data = it[1].toString().decodeBase64Bytes()
         data.hashToHexString(algorithm)
     }
 
     scope.putFunc("btoa") {
-        it.first().toString().encodeBase64()
+        it.param(0, "").encodeBase64()
     }
 
-
     scope.putFunc("atob") {
-        it.first().toString().decodeBase64String()
+        it.param(0, "").decodeBase64String()
     }
 
     scope.putFunc("appendBase64") {
-        val first = it[0].toString().decodeBase64Bytes()
-        val second = it[1].toString().decodeBase64Bytes()
+        val first = it.param(0, "").decodeBase64Bytes()
+        val second = it.param(1, "").decodeBase64Bytes()
         (first + second).encodeBase64()
     }
 
     scope.putFunc("encodeUrl") {
-        it.first().toString().encodeURL()
+        it.param(0, "").encodeURL()
     }
 
     scope.putFunc("decodeUrl") {
-        it.first().toString().decodeURLQueryComponent()
+        it.param(0, "").decodeURLQueryComponent()
     }
 
     scope.putFunc("print") {
@@ -69,9 +76,9 @@ fun getRhinoScope(context: Context, client: HttpClient): Scriptable {
     }
 
     scope.putFunc("submitForm") { args ->
-        val url = args.first().toString()
-        val formValues = (args.getOrNull(1) as? NativeObject) ?: NativeObject()
-        val reqHeaders = (args.getOrNull(2) as? NativeObject) ?: NativeObject()
+        val url = args.param(0, "")
+        val formValues = args.param(1, NativeObject())
+        val reqHeaders = args.param(2, NativeObject())
         val reqForm = formData {
             formValues.forEach { entry ->
                 val data = entry.value
@@ -106,10 +113,10 @@ fun getRhinoScope(context: Context, client: HttpClient): Scriptable {
     }
 
     scope.putFunc("http") { args ->
-        val reqMethod = args.getOrNull(0) as? String ?: ""
-        val reqUrl = args.getOrNull(1) as? String ?: ""
-        val reqBody = (args.getOrNull(2)?.toString() ?: "").decodeBase64Bytes()
-        val reqHeaders = (args.getOrNull(3) as? NativeObject) ?: NativeObject()
+        val reqMethod = args.param(0, "")
+        val reqUrl = args.param(1, "")
+        val reqBody = args.param(2, "").decodeBase64Bytes()
+        val reqHeaders = args.param(3, NativeObject())
         runBlocking {
             client.request {
                 method = HttpMethod(reqMethod.uppercase())
