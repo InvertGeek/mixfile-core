@@ -32,7 +32,7 @@ fun <T> Scriptable.putFunc(name: String, func: (args: Array<out Any>) -> T?) {
 }
 
 private inline fun <reified T> Array<out Any?>.param(index: Int, default: T): T {
-    val param = this[index]
+    val param = this.getOrNull(index)
     if (param is T) {
         return param
     }
