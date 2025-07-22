@@ -33,6 +33,10 @@ fun <T> Scriptable.putFunc(name: String, func: (args: Array<out Any>) -> T?) {
 
 private inline fun <reified T> Array<out Any?>.param(index: Int, default: T): T {
     val param = this.getOrNull(index) ?: return default
+    //处理 org.mozilla.javascript.ConsString
+    if (default is String) {
+        return param.toString() as T
+    }
     return param as T
 }
 
