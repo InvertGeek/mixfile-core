@@ -15,9 +15,9 @@ class JSUploader(name: String, val scriptCode: String) : Uploader(name) {
 
     override suspend fun doUpload(fileData: ByteArray, client: HttpClient, headSize: Int): String {
         return runScript(scriptCode, defaultClient) {
-            put("setReferer", JSFunction {
+            putFunc("setReferer") {
                 refererValue = it.first().toString()
-            })
+            }
             put("IMAGE_DATA", fileData.encodeBase64())
             put("HEAD_SIZE", headSize)
         }.trim()

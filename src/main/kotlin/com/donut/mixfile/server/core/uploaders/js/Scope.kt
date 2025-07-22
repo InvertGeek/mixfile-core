@@ -2,7 +2,6 @@ package com.donut.mixfile.server.core.uploaders.js
 
 import com.donut.mixfile.server.core.utils.add
 import com.donut.mixfile.server.core.utils.encodeURL
-import com.donut.mixfile.server.core.utils.fileFormHeaders
 import com.donut.mixfile.server.core.utils.hashToHexString
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -21,56 +20,77 @@ fun Scriptable.put(name: String, value: Any?) {
     put(name, this, value)
 }
 
+fun <T> Scriptable.putFunc(name: String, func: (args: Array<out Any>) -> T?) {
+    put(name, JSFunction {
+        try {
+            func(it)
+        } catch (e: Exception) {
+            //不能抛出Exception Rhino会提示无法将Exception cast为error
+            throw Error("JS函数(${name})执行出错: ${e.message}")
+        }
+    })
+}
+
 fun getRhinoScope(context: Context, client: HttpClient): Scriptable {
 
     val scope: Scriptable = context.initStandardObjects()
 
-    scope.put("hash", JSFunction {
+    scope.putFunc("hash") {
         val algorithm = it.first().toString().uppercase()
         val data = it[1].toString().decodeBase64Bytes()
         data.hashToHexString(algorithm)
-    })
+    }
 
-    scope.put("btoa", JSFunction {
+    scope.putFunc("btoa") {
         it.first().toString().encodeBase64()
-    })
+    }
 
 
-    scope.put("atob", JSFunction {
+    scope.putFunc("atob") {
         it.first().toString().decodeBase64String()
-    })
+    }
 
-    scope.put("appendBase64", JSFunction {
+    scope.putFunc("appendBase64") {
         val first = it[0].toString().decodeBase64Bytes()
         val second = it[1].toString().decodeBase64Bytes()
         (first + second).encodeBase64()
-    })
+    }
 
-    scope.put("encodeUrl", JSFunction {
+    scope.putFunc("encodeUrl") {
         it.first().toString().encodeURL()
-    })
+    }
 
-    scope.put("decodeUrl", JSFunction {
+    scope.putFunc("decodeUrl") {
         it.first().toString().decodeURLQueryComponent()
-    })
+    }
 
-    scope.put("print", JSFunction {
+    scope.putFunc("print") {
         println(it.joinToString(" "))
-    })
+    }
 
-    scope.put("submitForm", JSFunction { args ->
+    scope.putFunc("submitForm") { args ->
         val url = args.first().toString()
         val formValues = (args.getOrNull(1) as? NativeObject) ?: NativeObject()
         val reqHeaders = (args.getOrNull(2) as? NativeObject) ?: NativeObject()
         val reqForm = formData {
-            formValues.forEach {
-                val data = it.value
+            formValues.forEach { entry ->
+                val data = entry.value
+                val key = entry.key.toString()
                 if (data is NativeArray) {
-                    val imageData = data.first().toString().decodeBase64Bytes()
-                    add(it.key.toString(), imageData, fileFormHeaders())
+                    val fileInfo = data.toList().map { it.toString() }
+                    val imageData = fileInfo[0].decodeBase64Bytes()
+                    val fileName = fileInfo[1]
+                    val contentType = fileInfo[2]
+                    add(key, imageData, Headers.build {
+                        append(HttpHeaders.ContentType, contentType)
+                        append(
+                            HttpHeaders.ContentDisposition,
+                            "filename=\"${fileName}\""
+                        )
+                    })
                     return@forEach
                 }
-                add(it.key.toString(), data)
+                add(key, data)
             }
         }
         runBlocking {
@@ -83,9 +103,9 @@ fun getRhinoScope(context: Context, client: HttpClient): Scriptable {
                 }
             }.body<ByteArray>().encodeBase64()
         }
-    })
+    }
 
-    scope.put("http", JSFunction { args ->
+    scope.putFunc("http") { args ->
         val reqMethod = args.getOrNull(0) as? String ?: ""
         val reqUrl = args.getOrNull(1) as? String ?: ""
         val reqBody = (args.getOrNull(2)?.toString() ?: "").decodeBase64Bytes()
@@ -100,7 +120,7 @@ fun getRhinoScope(context: Context, client: HttpClient): Scriptable {
                 setBody(reqBody)
             }.body<ByteArray>().encodeBase64()
         }
-    })
+    }
 
     return scope
 }
