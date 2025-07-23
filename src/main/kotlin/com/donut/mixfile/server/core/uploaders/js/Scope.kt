@@ -52,7 +52,7 @@ fun getRhinoScope(context: Context, client: HttpClient): Scriptable {
     scope.putFunc("putCache") {
         val key = it.param(0, "")
         val value = it.param(1, "")
-        val expireSec = it.param(2, 0)
+        val expireSec = it.param(2, 0.0).toInt()
         val expireAt = if (expireSec == -1) NEVER_EXPIRE else System.currentTimeMillis() + expireSec * 1000
         GLOBAL_CACHE[key] = value to expireAt
     }
