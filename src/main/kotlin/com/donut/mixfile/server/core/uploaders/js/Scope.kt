@@ -14,6 +14,7 @@ import org.mozilla.javascript.Context
 import org.mozilla.javascript.NativeArray
 import org.mozilla.javascript.NativeObject
 import org.mozilla.javascript.Scriptable
+import java.util.concurrent.ConcurrentHashMap
 
 
 fun Scriptable.put(name: String, value: Any?) {
@@ -40,10 +41,34 @@ inline fun <reified T> Array<out Any?>.param(index: Int, default: T): T {
     return param as T
 }
 
+private val GLOBAL_CACHE = ConcurrentHashMap<String, Pair<String, Long>>()
+private const val NEVER_EXPIRE: Long = Long.MAX_VALUE
 
 fun getRhinoScope(context: Context, client: HttpClient): Scriptable {
 
     val scope: Scriptable = context.initStandardObjects()
+
+    // 缓存 putCache(key, value, expireSeconds)
+    scope.putFunc("putCache") {
+        val key = it.param(0, "")
+        val value = it.param(1, "")
+        val expireSec = it.param(2, 0)
+        val expireAt = if (expireSec == -1) NEVER_EXPIRE else System.currentTimeMillis() + expireSec * 1000
+        GLOBAL_CACHE[key] = value to expireAt
+    }
+
+    // 缓存 getCache(key) => string or null
+    scope.putFunc("getCache") {
+        val key = it.param(0, "")
+        val entry = GLOBAL_CACHE[key] ?: return@putFunc null
+        val (data, expireTime) = entry
+        if (System.currentTimeMillis() <= expireTime) {
+            return@putFunc data
+        }
+        GLOBAL_CACHE.remove(key)
+        null
+    }
+
     scope.putFunc("hash") {
         val algorithm = it.param(0, "").uppercase()
         val data = it[1].toString().decodeBase64Bytes()
