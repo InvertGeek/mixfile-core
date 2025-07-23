@@ -10,11 +10,10 @@ import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.util.*
 import kotlinx.coroutines.runBlocking
-import org.mozilla.javascript.Context
-import org.mozilla.javascript.NativeArray
-import org.mozilla.javascript.NativeObject
-import org.mozilla.javascript.Scriptable
+import org.mozilla.javascript.*
+import org.mozilla.javascript.Function
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.locks.ReentrantLock
 
 
 fun Scriptable.put(name: String, value: Any?) {
@@ -44,9 +43,26 @@ inline fun <reified T> Array<out Any?>.param(index: Int, default: T): T {
 private val GLOBAL_CACHE = ConcurrentHashMap<String, Pair<String, Long>>()
 private const val NEVER_EXPIRE: Long = Long.MAX_VALUE
 
+private val GLOBAL_LOCKS = ConcurrentHashMap<String, ReentrantLock>()
+
 fun getRhinoScope(context: Context, client: HttpClient): Scriptable {
 
     val scope: Scriptable = context.initStandardObjects()
+
+    // JS: lock("key", () => { ... })
+    scope.putFunc("lock") { args ->
+        val key = args.param(0, "")
+        val callback = args[1] as Function
+
+        val lock = GLOBAL_LOCKS.computeIfAbsent(key) { ReentrantLock() }
+
+        return@putFunc try {
+            lock.lock()
+            callback.call(context, scope, scope, emptyArray())
+        } finally {
+            lock.unlock()
+        }
+    }
 
     // 缓存 putCache(key, value, expireSeconds)
     scope.putFunc("putCache") {
