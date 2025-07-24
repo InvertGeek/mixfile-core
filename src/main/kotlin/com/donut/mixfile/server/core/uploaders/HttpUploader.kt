@@ -10,7 +10,9 @@ abstract class HttpUploader(name: String) : Uploader(name) {
 
     abstract val reqUrl: String
 
-    abstract override var referer: String
+    abstract override val referer: String
+
+    abstract suspend fun setReferer(value: String)
 
 
     override suspend fun genHead(client: HttpClient): ByteArray {
@@ -19,7 +21,7 @@ abstract class HttpUploader(name: String) : Uploader(name) {
         }.also {
             val customReferer = it.headers["referer"]
             if (!customReferer.isNullOrEmpty()) {
-                this.referer = customReferer
+                setReferer(customReferer)
             }
         }.bodyAsBytes()
     }
