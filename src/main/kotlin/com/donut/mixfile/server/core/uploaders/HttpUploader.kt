@@ -8,7 +8,7 @@ import io.ktor.http.*
 
 abstract class HttpUploader(name: String) : Uploader(name) {
 
-    abstract var reqUrl: String
+    abstract val reqUrl: String
 
     abstract override var referer: String
 
@@ -21,7 +21,7 @@ abstract class HttpUploader(name: String) : Uploader(name) {
             if (!customReferer.isNullOrEmpty()) {
                 this.referer = customReferer
             }
-        }.readRawBytes()
+        }.bodyAsBytes()
     }
 
     override suspend fun doUpload(fileData: ByteArray, client: HttpClient, headSize: Int): String {

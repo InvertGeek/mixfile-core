@@ -4,9 +4,9 @@ import com.donut.mixfile.server.core.utils.add
 import com.donut.mixfile.server.core.utils.encodeURL
 import com.donut.mixfile.server.core.utils.hashToHexString
 import io.ktor.client.*
-import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.util.*
 import kotlinx.coroutines.runBlocking
@@ -151,7 +151,7 @@ fun getRhinoScope(context: Context, client: HttpClient): Scriptable {
                 reqHeaders.forEach {
                     header(it.key.toString(), it.value)
                 }
-            }.body<ByteArray>().encodeBase64()
+            }.bodyAsBytes().encodeBase64()
         }
     }
 
@@ -168,7 +168,7 @@ fun getRhinoScope(context: Context, client: HttpClient): Scriptable {
                     header(it.key.toString(), it.value)
                 }
                 setBody(reqBody)
-            }.body<ByteArray>().encodeBase64()
+            }.bodyAsBytes().encodeBase64()
         }
     }
 
