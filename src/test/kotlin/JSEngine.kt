@@ -1,5 +1,5 @@
-import com.donut.mixfile.server.core.uploaders.js.JSFunction
-import com.donut.mixfile.server.core.uploaders.js.put
+import com.donut.mixfile.server.core.uploaders.base.js.JSFunction
+import com.donut.mixfile.server.core.uploaders.base.js.put
 import org.mozilla.javascript.Context
 
 fun runScript(code: String): Any? {

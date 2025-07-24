@@ -1,4 +1,4 @@
-package com.donut.mixfile.server.core.uploaders.js
+package com.donut.mixfile.server.core.uploaders.base.js
 
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.Scriptable

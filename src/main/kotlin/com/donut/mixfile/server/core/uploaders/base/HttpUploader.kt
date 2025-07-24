@@ -1,4 +1,4 @@
-package com.donut.mixfile.server.core.uploaders
+package com.donut.mixfile.server.core.uploaders.base
 
 import com.donut.mixfile.server.core.Uploader
 import io.ktor.client.*
