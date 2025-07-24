@@ -6,7 +6,7 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 
-abstract class HttpUploader : Uploader("自定义") {
+abstract class HttpUploader(name: String) : Uploader(name) {
 
     abstract var reqUrl: String
 
