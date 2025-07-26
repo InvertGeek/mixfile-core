@@ -8,7 +8,8 @@ plugins {
     `maven-publish`
     `java-library`
 }
-val projectVersion = "1.0.6"
+
+val projectVersion = "1.1.0"
 group = "com.donut.mixfile-core"
 version = projectVersion
 
@@ -35,7 +36,6 @@ publishing {
     }
 
     repositories {
-        maven("https://jitpack.io")
         google()
         mavenLocal() // 发布到本地仓库
     }
