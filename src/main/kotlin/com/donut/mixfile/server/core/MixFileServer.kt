@@ -27,6 +27,7 @@ abstract class MixFileServer(
     open val uploadTaskCount: Int = 10
     open val uploadRetryCount: Int = 10
 
+    @Volatile
     var server: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>? = null
         private set
 
@@ -81,25 +82,34 @@ abstract class MixFileServer(
 
     open val webDav = WebDavManager()
 
-    fun stop() {
-        server?.stop()
-    }
+
+    private val serverLock = Any()
 
 
     fun start(wait: Boolean) {
-        server?.stop()
-        serverPort = findAvailablePort(serverPort) ?: serverPort
-        val fileServer = embeddedServer(
-            factory = Netty,
-            host = host,
-            port = serverPort,
-            watchPaths = emptyList()
-        ) {
-            defaultModule()
-            extendModule()
+        synchronized(serverLock) {
+            server?.stop()
+            serverPort = findAvailablePort(serverPort) ?: serverPort
+            val fileServer = embeddedServer(
+                factory = Netty,
+                host = host,
+                port = serverPort,
+                watchPaths = emptyList()
+            ) {
+                defaultModule()
+                extendModule()
+            }
+            server = fileServer
+            fileServer.start(wait = wait)
         }
-        server = fileServer
-        fileServer.start(wait = wait)
     }
+
+    fun stop() {
+        synchronized(serverLock) {
+            server?.stop()
+            server = null
+        }
+    }
+
 }
 
