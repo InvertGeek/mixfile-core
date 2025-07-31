@@ -4,6 +4,9 @@ package com.donut.mixfile.server.core.routes.api.webdav.objects
 import com.donut.mixfile.server.core.objects.FileDataLog
 import com.donut.mixfile.server.core.objects.WebDavFile
 import com.donut.mixfile.server.core.utils.*
+import kotlinx.serialization.builtins.SetSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
 import java.util.concurrent.ConcurrentHashMap
 
 
@@ -47,7 +50,9 @@ open class WebDavManager {
 
 
     private fun loadLegacyData(data: String): WebDavFile {
-        val davData: ConcurrentHashMap<String, MutableSet<WebDavFile>> = data.parseJsonObject()
+        val serializer = ConcurrentHashMapSerializer(String.serializer(), SetSerializer(WebDavFile.serializer()))
+
+        val davData: ConcurrentHashMap<String, Set<WebDavFile>> = Json.decodeFromString(serializer, data)
         val rootFile = WebDavFile("root", isFolder = true)
         davData.forEach { (path, fileList) ->
             if (path.isBlank()) return@forEach
