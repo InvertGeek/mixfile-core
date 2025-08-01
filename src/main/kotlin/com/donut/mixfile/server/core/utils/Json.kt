@@ -36,8 +36,8 @@ fun JsonObject.getBoolean(key: String): Boolean? =
 
 
 class ConcurrentHashMapSerializer<K, V>(
-    private val keySerializer: KSerializer<K>,
-    private val valueSerializer: KSerializer<V>
+    keySerializer: KSerializer<K>,
+    valueSerializer: KSerializer<V>
 ) : KSerializer<ConcurrentHashMap<K, V>> {
 
     private val mapSerializer = MapSerializer(keySerializer, valueSerializer)

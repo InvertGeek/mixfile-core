@@ -7,7 +7,7 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.http.*
 import okhttp3.Dispatcher
 
-private val client = HttpClient(OkHttp) {
+val defaultClient = HttpClient(OkHttp) {
     engine {
         config {
             dispatcher(Dispatcher().apply {
@@ -27,6 +27,3 @@ private val client = HttpClient(OkHttp) {
         userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
     }
 }
-
-val defaultClient
-    get() = client

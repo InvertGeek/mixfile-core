@@ -50,10 +50,13 @@ open class WebDavManager {
 
 
     private fun loadLegacyData(data: String): WebDavFile {
+
         val serializer = ConcurrentHashMapSerializer(String.serializer(), SetSerializer(WebDavFile.serializer()))
 
         val davData: ConcurrentHashMap<String, Set<WebDavFile>> = Json.decodeFromString(serializer, data)
+
         val rootFile = WebDavFile("root", isFolder = true)
+
         davData.forEach { (path, fileList) ->
             if (path.isBlank()) return@forEach
             val pathSegments = path.split("/").filter { it.isNotEmpty() }
@@ -74,6 +77,7 @@ open class WebDavManager {
             }
 
         }
+
         return rootFile
     }
 
