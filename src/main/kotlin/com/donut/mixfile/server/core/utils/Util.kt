@@ -183,6 +183,8 @@ class StreamContent(private val stream: InputStream, val length: Long = 0) :
 
 }
 
+class NoRetryException(message: String) : Exception(message)
+
 suspend fun <T> retry(
     times: Int = 3,
     delay: Long = 500,
@@ -191,9 +193,10 @@ suspend fun <T> retry(
     repeat(times - 1) {
         try {
             return block()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             //取消后立即停止重试
             if (e is CancellationException) throw e
+            if (e is NoRetryException) throw e
             delay(delay)
         }
     }

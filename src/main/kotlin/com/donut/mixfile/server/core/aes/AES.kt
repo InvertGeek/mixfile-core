@@ -1,5 +1,6 @@
 package com.donut.mixfile.server.core.aes
 
+import com.donut.mixfile.server.core.utils.NoRetryException
 import io.ktor.utils.io.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -57,7 +58,7 @@ suspend fun decryptAES(
         while (!data.isClosedForRead) {
             // +12字节ghash 大小,iv已读取
             if (size >= limit + 12) {
-                throw Exception("分片文件过大")
+                throw NoRetryException("分片文件过大")
             }
             val buffer = data.readRemaining(1024 * 64).readByteArray()
             size += buffer.size

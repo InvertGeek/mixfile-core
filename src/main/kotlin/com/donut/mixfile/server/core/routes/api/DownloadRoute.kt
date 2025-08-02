@@ -47,7 +47,7 @@ suspend fun MixFileServer.respondMixFile(call: ApplicationCall, shareInfo: MixSh
     val name = param["name"].ifNullOrBlank { shareInfo.fileName }
 
     val mixFile = try {
-        shareInfo.fetchMixFile(httpClient, referer)
+        shareInfo.fetchMixFile(this, referer)
     } catch (e: Exception) {
         call.respondText(
             "解析文件索引失败: ${e.stackTraceToString()}",
@@ -101,6 +101,7 @@ suspend fun MixFileServer.writeMixFileToByteChannel(
     referer: String = shareInfo.referer,
     channel: ByteWriteChannel,
 ) {
+    val server = this
     coroutineScope {
         val chunkSizeMB = mixFile.chunkSize / 1.mb
         val taskCount = (downloadTaskCount / chunkSizeMB.coerceAtLeast(1)).coerceAtLeast(1)
@@ -114,7 +115,7 @@ suspend fun MixFileServer.writeMixFileToByteChannel(
             tasks.add(async {
                 val (url, range) = currentFile
                 val dataBytes = try {
-                    shareInfo.fetchFile(url, httpClient, referer)
+                    shareInfo.fetchFile(url, server, referer)
                 } catch (e: Exception) {
                     channel.close(e)
                     throw e
