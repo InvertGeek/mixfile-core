@@ -128,7 +128,7 @@ private suspend fun MixFileServer.doUploadFile(
         tasks.awaitAll()
 
         if (uploadedChunkCount < chunkCount) {
-            throw Exception("上传失败")
+            throw Exception("上传失败,分片数量不足: ${uploadedChunkCount} < ${chunkCount}")
         }
 
         val mixFile =
