@@ -126,8 +126,10 @@ data class WebDavFile(
                     "D:getcontentlength" {
                         -size.toString()
                     }
-                    "D:getetag" {
-                        -shareInfoData
+                    if (shareInfoData.isNotEmpty()) {
+                        "D:getetag" {
+                            -shareInfoData
+                        }
                     }
                     "D:getlastmodified" {
                         -getLastModifiedFormatted()

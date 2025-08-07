@@ -36,6 +36,7 @@ val MixFileServer.defaultModule: Application.() -> Unit
                 "Date", DateTimeFormatter.RFC_1123_DATE_TIME
                     .format(ZonedDateTime.now(java.time.ZoneOffset.UTC))
             )
+            header("x-powered-by", "MixFile")
         }
         install(StatusPages) {
             exception<Throwable> { call, cause ->
