@@ -64,7 +64,7 @@ suspend fun MixFileServer.respondMixFile(call: ApplicationCall, shareInfo: MixSh
             "Content-Disposition",
             "inline; filename=\"${name.encodeURL()}\""
         )
-        header("x-mix-code", shareInfo.toString())
+        header("x-mixfile-code", shareInfo.toString())
     }
 
     var fileList = mixFile.fileList.map { it to 0 }

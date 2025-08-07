@@ -2,7 +2,9 @@ package com.donut.mixfile.server.core.objects
 
 import com.donut.mixfile.server.core.routes.api.webdav.objects.normalPath
 import com.donut.mixfile.server.core.routes.api.webdav.objects.xml
-import com.donut.mixfile.server.core.utils.*
+import com.donut.mixfile.server.core.utils.ConcurrentHashMapSerializer
+import com.donut.mixfile.server.core.utils.parseFileMimeType
+import com.donut.mixfile.server.core.utils.sanitizeFileName
 import io.ktor.http.*
 import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat
@@ -125,7 +127,7 @@ data class WebDavFile(
                         -size.toString()
                     }
                     "D:getetag" {
-                        -shareInfoData.hashSHA256().toHex()
+                        -shareInfoData
                     }
                     "D:getlastmodified" {
                         -getLastModifiedFormatted()

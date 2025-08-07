@@ -140,9 +140,14 @@ private suspend fun MixFileServer.doUploadFile(
             )
 
         val mixFileData = mixFile.toBytes()
-        val mixFileUrl =
-            uploader.upload(head, mixFileData, secret, this@doUploadFile)
 
-        return@coroutineScope mixFileUrl to totalChunkSize
+        try {
+            val mixFileUrl =
+                uploader.upload(head, mixFileData, secret, this@doUploadFile)
+            return@coroutineScope mixFileUrl to totalChunkSize
+        } catch (e: Exception) {
+            throw Exception("索引文件上传失败", e)
+        }
+
     }
 }

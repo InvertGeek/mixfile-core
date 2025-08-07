@@ -116,9 +116,13 @@ fun MixFileServer.getWebDAVRoute(): Route.() -> Unit {
                 call.respond(HttpStatusCode.NotFound)
                 return@webdav
             }
+            if (fileNode.isFolder) {
+                call.respond(HttpStatusCode.MethodNotAllowed)
+                return@webdav
+            }
             val shareInfo = resolveMixShareInfo(fileNode.shareInfoData)
             if (shareInfo == null) {
-                call.respond(HttpStatusCode.Conflict)
+                call.respond(HttpStatusCode.InternalServerError)
                 return@webdav
             }
             respondMixFile(call, shareInfo)
