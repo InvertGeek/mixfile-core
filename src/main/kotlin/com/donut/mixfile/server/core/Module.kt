@@ -30,6 +30,7 @@ val MixFileServer.defaultModule: Application.() -> Unit
             allowHeader(HttpHeaders.AccessControlAllowMethods)
             allowHeader(HttpHeaders.ContentType)
             allowHeader(HttpHeaders.Authorization)
+            allowCredentials = true
         }
         install(DefaultHeaders) {
             header(

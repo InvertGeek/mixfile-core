@@ -24,6 +24,9 @@ fun Route.interceptCall(
 
 fun Route.mixBasicAuth(passwordFunc: () -> String, build: Route.() -> Unit = {}) =
     interceptCall({ call ->
+        if (call.response.isCommitted) {
+            return@interceptCall
+        }
         val password = passwordFunc()
         if (password.isBlank()) {
             return@interceptCall

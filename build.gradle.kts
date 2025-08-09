@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     java // 确保应用了 Java 插件
     kotlin("jvm") version "2.2.0"
-    id("io.ktor.plugin") version "3.2.2"
+    id("io.ktor.plugin") version "3.2.3"
     kotlin("plugin.serialization") version "2.2.0"
     `maven-publish`
     `java-library`
