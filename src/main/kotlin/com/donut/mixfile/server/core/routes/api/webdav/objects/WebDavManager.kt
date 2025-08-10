@@ -27,11 +27,15 @@ open class WebDavManager {
     }
 
     fun parseDataFromBytes(data: ByteArray): WebDavFile {
-        val dataStr = decompressGzip(data)
-        if (dataStr.startsWith(VERSION_PREFIX)) {
-            return dataStr.substring(VERSION_PREFIX.length).parseJsonObject()
+        try {
+            val dataStr = decompressGzip(data)
+            if (dataStr.startsWith(VERSION_PREFIX)) {
+                return dataStr.substring(VERSION_PREFIX.length).parseJsonObject()
+            }
+            return loadLegacyData(dataStr)
+        } catch (e: Exception) {
+            throw Exception("载入WebDAV存档失败", e)
         }
-        return loadLegacyData(dataStr)
     }
 
     fun importMixList(list: List<FileDataLog>, path: String = "") {
