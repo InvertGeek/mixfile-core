@@ -107,6 +107,11 @@ open class WebDavManager {
         overwrite: Boolean,
         keep: Boolean = true
     ): Boolean {
+
+        if (path.contentEquals(dest)) {
+            return false
+        }
+
         val srcFile = getFile(path) ?: return false
         val destFile = getFile(dest)
         if (!overwrite && destFile != null) {
