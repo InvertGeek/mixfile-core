@@ -115,7 +115,7 @@ open class WebDavManager {
 
         val destName = dest.pathFileName()
 
-        addFileNode(
+        val added = addFileNode(
             dest.parentPath(),
             srcFile.copy(
                 name = destName,
@@ -124,6 +124,11 @@ open class WebDavManager {
                     shareInfo?.copy(fileName = destName)?.toString() ?: it
                 })
         )
+
+        if (!added) {
+            return false
+        }
+
         if (!keep) {
             removeFileNode(path)
         }
