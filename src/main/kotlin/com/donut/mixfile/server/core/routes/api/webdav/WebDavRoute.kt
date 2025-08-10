@@ -46,19 +46,23 @@ val RoutingContext.davShareInfo: MixShareInfo?
 
 
 suspend fun RoutingContext.handleCopy(keep: Boolean, webDavManager: WebDavManager) {
+
     val overwrite = getHeader("overwrite").contentEquals("T")
-    val destination = getHeader("destination")?.decodeURLQueryComponent().let {
-        it?.substringAfter(routePrefix).normalPath()
-    }
+
+    val destination = getHeader("destination").decodeURLQueryComponent().substringAfter(routePrefix).normalPath()
+
     if (destination.isBlank()) {
         call.respond(HttpStatusCode.BadRequest)
         return
     }
+
     val moved = webDavManager.copyFile(davPath, destination, overwrite, keep)
+
     if (!moved) {
         call.respond(HttpStatusCode.PreconditionFailed)
         return
     }
+
     call.respond(HttpStatusCode.Created)
     webDavManager.saveData()
 }

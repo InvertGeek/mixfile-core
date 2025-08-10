@@ -19,7 +19,7 @@ fun main() {
             get() = 10
 
         override fun onError(error: Throwable) {
-            error.printStackTrace()
+            println(error.stackTraceToString())
         }
 
         override fun getUploader(): Uploader {
