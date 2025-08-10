@@ -3,7 +3,6 @@ package com.donut.mixfile.server.core
 import io.ktor.client.*
 import io.ktor.client.engine.okhttp.*
 import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.http.*
 import okhttp3.Dispatcher
 
@@ -15,9 +14,6 @@ val defaultClient = HttpClient(OkHttp) {
                 maxRequests = Int.MAX_VALUE
             })
         }
-    }
-    install(ContentNegotiation) {
-
     }
     install(HttpTimeout) {
         requestTimeoutMillis = 1000 * 300
