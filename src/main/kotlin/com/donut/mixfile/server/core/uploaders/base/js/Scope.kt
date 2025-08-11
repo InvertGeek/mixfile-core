@@ -69,7 +69,7 @@ fun getRhinoScope(context: Context, client: HttpClient): Scriptable {
         val key = it.param(0, "")
         val value = it.param(1, "")
         val expireSec = it.param(2, 0.0).toInt()
-        val expireAt = if (expireSec < 0) NEVER_EXPIRE else System.currentTimeMillis() + expireSec * 1000
+        val expireAt = if (expireSec < 0) NEVER_EXPIRE else System.currentTimeMillis() + expireSec * 1000L
         GLOBAL_CACHE[key] = value to expireAt
     }
 
