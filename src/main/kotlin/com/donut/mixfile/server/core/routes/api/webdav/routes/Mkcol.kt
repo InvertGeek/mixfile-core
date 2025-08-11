@@ -10,16 +10,14 @@ import io.ktor.server.routing.*
 val MixFileServer.webDavMkcolRoute: Route.() -> Unit
     get() = {
         webdav("MKCOL") {
+
             if (davPath.isEmpty()) {
                 call.respond(HttpStatusCode.Created)
                 return@webdav
             }
-            val fileList = webDav.listFiles(davParentPath)
-            if (fileList == null) {
-                call.respond(HttpStatusCode.Conflict)
-                return@webdav
-            }
+
             val shareInfo = davShareInfo
+            //文件夹名称是分享码自动创建文件
             if (shareInfo != null) {
                 val node = WebDavFile(
                     name = shareInfo.fileName,
@@ -31,8 +29,23 @@ val MixFileServer.webDavMkcolRoute: Route.() -> Unit
                 webDav.saveData()
                 return@webdav
             }
+
+            val file = webDav.getFile(davPath)
+
+            if (file != null) {
+                call.respond(HttpStatusCode.MethodNotAllowed)
+                return@webdav
+
+            }
+
             val node = WebDavFile(isFolder = true, name = davFileName)
-            webDav.addFileNode(davParentPath, node)
+            val added = webDav.addFileNode(davParentPath, node)
+
+            if (!added) {
+                call.respond(HttpStatusCode.Conflict)
+                return@webdav
+            }
+
             call.respond(HttpStatusCode.Created)
             webDav.saveData()
         }
