@@ -2,14 +2,12 @@ package com.donut.mixfile.server.core.routes.api.webdav.objects
 
 
 class XmlBuilder(private val name: String) {
+
     private val children = mutableListOf<XmlBuilder>()
+
     private val attributes = mutableMapOf<String, String>()
+
     private var text: String? = null
-    var xmlns: String? = null
-        set(value) {
-            field = value
-            attributes["xmlns"] = value ?: return
-        }
 
     operator fun String.invoke(block: XmlBuilder.() -> Unit): XmlBuilder {
         val child = XmlBuilder(this).apply(block)

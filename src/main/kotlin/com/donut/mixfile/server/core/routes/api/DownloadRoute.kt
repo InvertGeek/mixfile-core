@@ -57,13 +57,29 @@ suspend fun MixFileServer.respondMixFile(call: ApplicationCall, shareInfo: MixSh
     }
 
     var contentLength = shareInfo.fileSize
+
     val range: LongRange? = call.request.ranges()?.mergeToSingle(contentLength)
 
+    val responseCustomHeaders = mapOf(
+        "content-language" to "",
+        "content-disposition" to "inline; filename=\"${name.encodeURL()}\"",
+        "cache-control" to "",
+        "expires" to "",
+        "content-encoding" to "",
+    )
+
+
+    fun parseCustomHeader(headerName: String, default: String = ""): String {
+        return param["response-$headerName"].ifNullOrBlank { default }
+    }
+
     call.response.apply {
-        header(
-            "Content-Disposition",
-            "inline; filename=\"${name.encodeURL()}\""
-        )
+        responseCustomHeaders.forEach { (key, default) ->
+            val headerValue = parseCustomHeader(key, default)
+            if (headerValue.isNotEmpty()) {
+                header(key, headerValue)
+            }
+        }
         header("x-mixfile-code", shareInfo.toString())
     }
 
@@ -79,8 +95,15 @@ suspend fun MixFileServer.respondMixFile(call: ApplicationCall, shareInfo: MixSh
         contentLength = mixFile.fileSize - range.first
     }
 
+    val contentType = parseCustomHeader("content-type").let {
+        if (it.isNotEmpty()) {
+            return@let ContentType.parse(it)
+        }
+        return@let name.parseFileMimeType()
+    }
+
     call.respondBytesWriter(
-        contentType = name.parseFileMimeType(),
+        contentType = contentType,
         contentLength = contentLength
     ) {
         writeMixFileToByteChannel(

@@ -203,6 +203,8 @@ suspend fun <T> retry(
     return block() // 最后一次尝试
 }
 
+fun ApplicationCall.getHeader(name: String) = request.headers[name] ?: ""
+
 fun RoutingContext.getHeader(name: String) = call.request.header(name) ?: ""
 
 fun findAvailablePort(startPort: Int = 9527, endPort: Int = 65535): Int? {
