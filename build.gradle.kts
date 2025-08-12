@@ -66,13 +66,11 @@ dependencies {
     api("io.ktor:ktor-client-core")
     api("io.ktor:ktor-client-okhttp")
     api("io.ktor:ktor-client-logging")
-    api("io.ktor:ktor-client-content-negotiation")
     api("io.ktor:ktor-server-core")
     api("io.ktor:ktor-server-netty")
     api("io.ktor:ktor-server-default-headers")
     api("io.ktor:ktor-server-status-pages")
     api("io.ktor:ktor-server-cors")
-    api("io.ktor:ktor-server-content-negotiation")
 }
 
 

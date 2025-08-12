@@ -3,7 +3,6 @@ package com.donut.mixfile.server.core
 import com.donut.mixfile.server.core.routes.getRoutes
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.defaultheaders.*
 import io.ktor.server.plugins.statuspages.*
@@ -14,9 +13,6 @@ import java.time.format.DateTimeFormatter
 
 val MixFileServer.defaultModule: Application.() -> Unit
     get() = {
-        install(ContentNegotiation) {
-
-        }
         install(CORS) {
             allowOrigins { true }
             allowHeaders { true }
