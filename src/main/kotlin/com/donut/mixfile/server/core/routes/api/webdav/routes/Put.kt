@@ -4,10 +4,7 @@ import com.donut.mixfile.server.core.MixFileServer
 import com.donut.mixfile.server.core.objects.FileDataLog
 import com.donut.mixfile.server.core.objects.WebDavFile
 import com.donut.mixfile.server.core.routes.api.uploadFile
-import com.donut.mixfile.server.core.routes.api.webdav.davFileName
-import com.donut.mixfile.server.core.routes.api.webdav.davParentPath
-import com.donut.mixfile.server.core.routes.api.webdav.receiveBytes
-import com.donut.mixfile.server.core.routes.api.webdav.webdav
+import com.donut.mixfile.server.core.routes.api.webdav.*
 import com.donut.mixfile.server.core.utils.decompressGzip
 import com.donut.mixfile.server.core.utils.extensions.mb
 import com.donut.mixfile.server.core.utils.parseJsonObject
@@ -56,20 +53,37 @@ val MixFileServer.webDavPutRoute: Route.() -> Unit
             }
 
             val fileList = webDav.listFiles(davParentPath)
+
             if (fileList == null) {
                 call.respond(HttpStatusCode.Conflict)
                 return@webdav
             }
+
             val (shareInfo, finalSize) = uploadFile(
                 call.receiveChannel(),
                 davFileName,
                 fileSize,
                 add = false
             )
+
+            val existingFile = webDav.getFile(davPath)
             val fileNode =
                 WebDavFile(size = finalSize, shareInfoData = shareInfo, name = davFileName)
-            webDav.addFileNode(davParentPath, fileNode)
-            call.respond(HttpStatusCode.Created)
+            val added = webDav.addFileNode(davParentPath, fileNode)
+
+            //二次检查防止上传过程中文件结构变化
+            if (!added) {
+                call.respond(HttpStatusCode.Conflict)
+                return@webdav
+            }
+
+            val statusCode = if (existingFile != null) {
+                HttpStatusCode.NoContent
+            } else {
+                HttpStatusCode.Created
+            }
+
+            call.respond(statusCode)
             webDav.saveData()
         }
     }
