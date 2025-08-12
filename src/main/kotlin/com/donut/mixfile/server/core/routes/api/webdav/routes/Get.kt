@@ -20,8 +20,21 @@ val MixFileServer.webDavGetRoute: Route.() -> Unit
                     call.respond(HttpStatusCode.NotFound)
                     return@webdav
                 }
+
                 val data = webDav.dataToBytes(file.copy(name = "root"))
                 val fileName = "${davParentPath.ifEmpty { "root" }}.mix_dav".encodeURLParameter()
+
+                val paramEncoding = call.parameters["response-content-encoding"]
+
+                paramEncoding?.let {
+                    if (it.isNotBlank()) {
+                        call.response.apply {
+                            header("content-encoding", it)
+                        }
+                    }
+                }
+
+
                 call.response.apply {
                     header("Cache-Control", "no-cache, no-store, must-revalidate")
                     header("Pragma", "no-cache")
@@ -31,6 +44,7 @@ val MixFileServer.webDavGetRoute: Route.() -> Unit
                         "attachment;filename=\"$fileName\""
                     )
                 }
+
                 call.respondBytes(data, ContentType.Application.OctetStream)
                 return@webdav
             }

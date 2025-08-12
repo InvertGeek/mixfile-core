@@ -21,8 +21,13 @@ import kotlin.math.min
 
 fun MixFileServer.getUploadRoute(): RoutingHandler {
     return route@{
-        val name = call.parameters["name"]
-        val add = call.parameters["add"] ?: "true"
+
+        val params = call.parameters
+
+        val name = params["name"]
+
+        val add = params["add"] ?: "true"
+
         if (name.isNullOrEmpty()) {
             call.respondText("需要文件名称", status = HttpStatusCode.InternalServerError)
             return@route

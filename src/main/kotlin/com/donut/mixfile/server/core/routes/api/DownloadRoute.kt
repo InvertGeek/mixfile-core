@@ -24,8 +24,8 @@ import java.nio.ByteBuffer
 
 fun MixFileServer.getDownloadRoute(): RoutingHandler {
     return route@{
-        val param = call.parameters
-        val shareInfoData = param["s"]
+        val params = call.parameters
+        val shareInfoData = params["s"]
         if (shareInfoData == null) {
             call.respondText("分享信息为空", status = HttpStatusCode.InternalServerError)
             return@route
@@ -40,11 +40,11 @@ fun MixFileServer.getDownloadRoute(): RoutingHandler {
 }
 
 suspend fun MixFileServer.respondMixFile(call: ApplicationCall, shareInfo: MixShareInfo) {
-    val param = call.parameters
+    val params = call.parameters
 
-    val referer = param["referer"].ifNullOrBlank { shareInfo.referer }
+    val referer = params["referer"].ifNullOrBlank { shareInfo.referer }
 
-    val name = param["name"].ifNullOrBlank { shareInfo.fileName }
+    val name = params["name"].ifNullOrBlank { shareInfo.fileName }
 
     val mixFile = try {
         shareInfo.fetchMixFile(this, referer)
@@ -70,7 +70,7 @@ suspend fun MixFileServer.respondMixFile(call: ApplicationCall, shareInfo: MixSh
 
 
     fun parseCustomHeader(headerName: String, default: String = ""): String {
-        return param["response-$headerName"].ifNullOrBlank { default }
+        return params["response-$headerName"].ifNullOrBlank { default }
     }
 
     call.response.apply {
