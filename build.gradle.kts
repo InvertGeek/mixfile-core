@@ -65,7 +65,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
     api("io.ktor:ktor-client-core")
     api("io.ktor:ktor-client-okhttp")
-    api("io.ktor:ktor-client-logging")
     api("io.ktor:ktor-server-core")
     api("io.ktor:ktor-server-netty")
     api("io.ktor:ktor-server-default-headers")
