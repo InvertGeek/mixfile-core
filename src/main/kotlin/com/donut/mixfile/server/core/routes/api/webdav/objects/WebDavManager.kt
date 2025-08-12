@@ -112,8 +112,16 @@ open class WebDavManager {
             return false
         }
 
+        //禁止移动到自己的子目录
+        if (!keep && dest.startsWith("${path}/")) {
+            return false
+        }
+
         val srcFile = getFile(path) ?: return false
+
         val destFile = getFile(dest)
+
+        //目标存在且不覆盖
         if (!overwrite && destFile != null) {
             return false
         }
