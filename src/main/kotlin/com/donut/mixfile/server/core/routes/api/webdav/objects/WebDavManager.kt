@@ -19,17 +19,18 @@ open class WebDavManager {
     open var WEBDAV_DATA = WebDavFile("root", isFolder = true)
     open var loaded = true
 
-    @Synchronized
-    fun dataToBytes(data: WebDavFile = WEBDAV_DATA) =
-        compressGzip(VERSION_PREFIX + data.toJsonString())
+    // 私有锁对象
+    private val lock = Any()
 
-    @Synchronized
-    fun loadDataFromBytes(data: ByteArray) {
+    fun dataToBytes(data: WebDavFile = WEBDAV_DATA): ByteArray = synchronized(lock) {
+        compressGzip(VERSION_PREFIX + data.toJsonString())
+    }
+
+    fun loadDataFromBytes(data: ByteArray) = synchronized(lock) {
         WEBDAV_DATA = parseDataFromBytes(data)
     }
 
-    @Synchronized
-    fun parseDataFromBytes(data: ByteArray): WebDavFile {
+    fun parseDataFromBytes(data: ByteArray): WebDavFile = synchronized(lock) {
         try {
             val dataStr = decompressGzip(data)
             if (dataStr.startsWith(VERSION_PREFIX)) {
@@ -41,8 +42,7 @@ open class WebDavManager {
         }
     }
 
-    @Synchronized
-    fun importMixList(list: List<FileDataLog>, path: String = "") {
+    fun importMixList(list: List<FileDataLog>, path: String = "") = synchronized(lock) {
         list.forEach {
             addFileNode(path, WebDavFile(it.getCategory(), isFolder = true))
             addFileNode(
@@ -56,9 +56,7 @@ open class WebDavManager {
         }
     }
 
-    @Synchronized
     private fun loadLegacyData(data: String): WebDavFile {
-
         val serializer = ConcurrentHashMapSerializer(String.serializer(), SetSerializer(WebDavFile.serializer()))
 
         val davData: ConcurrentHashMap<String, Set<WebDavFile>> = Json.decodeFromString(serializer, data)
@@ -83,7 +81,6 @@ open class WebDavManager {
                     segmentFile.files[it.getName()] = it
                 }
             }
-
         }
 
         return rootFile
@@ -96,8 +93,7 @@ open class WebDavManager {
     open suspend fun saveWebDavData(data: ByteArray) {}
 
     // 添加文件或目录到指定路径
-    @Synchronized
-    open fun addFileNode(path: String, file: WebDavFile): Boolean {
+    open fun addFileNode(path: String, file: WebDavFile): Boolean = synchronized(lock) {
         val folder = getFile(path) ?: return false
         if (!folder.isFolder) {
             return false
@@ -106,13 +102,12 @@ open class WebDavManager {
         return true
     }
 
-    @Synchronized
     open fun copyFile(
         path: String,
         dest: String,
         overwrite: Boolean,
         keep: Boolean = true
-    ): Boolean {
+    ): Boolean = synchronized(lock) {
 
         if (path.contentEquals(dest)) {
             return false
@@ -155,8 +150,7 @@ open class WebDavManager {
     }
 
     // 删除指定路径的文件或目录
-    @Synchronized
-    open fun removeFileNode(path: String): WebDavFile? {
+    open fun removeFileNode(path: String): WebDavFile? = synchronized(lock) {
         val normalizedPath = normalizePath(path)
         val parentPath = normalizedPath.parentPath()
         val name = normalizedPath.pathFileName()
@@ -164,8 +158,7 @@ open class WebDavManager {
         return parentFolder.files.remove(name)
     }
 
-    @Synchronized
-    open fun getFile(path: String): WebDavFile? {
+    open fun getFile(path: String): WebDavFile? = synchronized(lock) {
         val normalizedPath = normalizePath(path)
         val pathSegments = normalizedPath.split("/").filter { it.isNotEmpty() }
         var file = WEBDAV_DATA
@@ -177,14 +170,13 @@ open class WebDavManager {
     }
 
     // 列出指定路径下的文件和目录
-    @Synchronized
-    open fun listFiles(path: String): List<WebDavFile>? {
+    open fun listFiles(path: String): List<WebDavFile>? = synchronized(lock) {
         val folder = getFile(path) ?: return null
         return folder.listFiles()
     }
 
-
 }
+
 
 
 
