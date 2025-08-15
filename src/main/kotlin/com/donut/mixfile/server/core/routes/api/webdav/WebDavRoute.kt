@@ -4,13 +4,11 @@ package com.donut.mixfile.server.core.routes.api.webdav
 import com.donut.mixfile.server.core.MixFileServer
 import com.donut.mixfile.server.core.interceptCall
 import com.donut.mixfile.server.core.objects.MixShareInfo
-import com.donut.mixfile.server.core.objects.WebDavFile
 import com.donut.mixfile.server.core.routes.api.webdav.objects.WebDavManager
 import com.donut.mixfile.server.core.routes.api.webdav.objects.normalPath
 import com.donut.mixfile.server.core.routes.api.webdav.objects.parentPath
 import com.donut.mixfile.server.core.routes.api.webdav.objects.pathFileName
 import com.donut.mixfile.server.core.routes.api.webdav.routes.*
-import com.donut.mixfile.server.core.utils.extensions.decodedPath
 import com.donut.mixfile.server.core.utils.extensions.paramPath
 import com.donut.mixfile.server.core.utils.extensions.routePrefix
 import com.donut.mixfile.server.core.utils.getHeader
@@ -101,19 +99,6 @@ suspend fun ApplicationCall.respondXml(xml: String) {
             """<?xml version="1.0" encoding="UTF-8"?>$xml"""
         )
     )
-}
-
-suspend fun RoutingContext.respondRootFile(file: WebDavFile?) {
-    if (file == null) {
-        call.respond(HttpStatusCode.NotFound)
-        return
-    }
-    val text = """
-                <D:multistatus xmlns:D="DAV:">
-                ${file.toXML(decodedPath, true)}
-                </D:multistatus>
-                """
-    call.respondXml(text)
 }
 
 fun compressXml(xmlString: String): String {

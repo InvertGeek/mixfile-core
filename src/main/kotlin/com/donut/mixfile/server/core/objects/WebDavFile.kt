@@ -82,10 +82,11 @@ data class WebDavFile(
 
     fun toXML(path: String, isRoot: Boolean = false): String {
         val pathName = name.takeIf { !isRoot } ?: ""
+        val filePath = "/${"$path/$pathName".normalPath()}".encodeURLPath(encodeEncoded = true)
         if (isFolder) {
             return xml("D:response") {
                 "D:href" {
-                    -"/${"$path/${pathName}".normalPath()}/".encodeURLPath(encodeEncoded = true)
+                    -filePath
                 }
                 "D:propstat" {
                     "D:prop" {
@@ -110,7 +111,7 @@ data class WebDavFile(
         }
         return xml("D:response") {
             "D:href" {
-                -"/${"$path/$name".normalPath()}".encodeURLPath(encodeEncoded = true)
+                -filePath
             }
             "D:propstat" {
                 "D:prop" {

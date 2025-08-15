@@ -3,12 +3,26 @@ package com.donut.mixfile.server.core.routes.api.webdav.routes
 import com.donut.mixfile.server.core.MixFileServer
 import com.donut.mixfile.server.core.objects.WebDavFile
 import com.donut.mixfile.server.core.routes.api.webdav.davPath
-import com.donut.mixfile.server.core.routes.api.webdav.respondRootFile
 import com.donut.mixfile.server.core.routes.api.webdav.respondXml
 import com.donut.mixfile.server.core.routes.api.webdav.webdav
 import com.donut.mixfile.server.core.utils.extensions.decodedPath
 import com.donut.mixfile.server.core.utils.getHeader
+import io.ktor.http.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
+
+suspend fun RoutingContext.respondSingleFile(file: WebDavFile?) {
+    if (file == null) {
+        call.respond(HttpStatusCode.NotFound)
+        return
+    }
+    val text = """
+                <D:multistatus xmlns:D="DAV:">
+                ${file.toXML(decodedPath, true)}
+                </D:multistatus>
+                """
+    call.respondXml(text)
+}
 
 val MixFileServer.webDavPropfindRoute: Route.() -> Unit
     get() = {
@@ -17,15 +31,16 @@ val MixFileServer.webDavPropfindRoute: Route.() -> Unit
             val depth = getHeader("depth").toIntOrNull() ?: 0
 
             val file = webDav.getFile(davPath)
+
             if (depth == 0) {
-                respondRootFile(file)
+                respondSingleFile(file)
                 return@webdav
             }
 
             val fileList = webDav.listFiles(davPath)
 
             if (fileList == null) {
-                respondRootFile(file)
+                respondSingleFile(file)
                 return@webdav
             }
 
