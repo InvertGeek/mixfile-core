@@ -68,7 +68,7 @@ fun MixShareInfo.shareCode(useShortCode: Boolean): String {
 }
 
 fun parseShareCode(code: String): MixShareInfo? {
-    val mf = code.substringAfter(MIXFILE_SCHEME)
+    val mf = code.substringAfter("://")
     val decoded = decodeHex(mf)
     val parsed = MixShareInfo.tryFromString(decoded) ?: MixShareInfo.tryFromString(mf)
     return parsed
