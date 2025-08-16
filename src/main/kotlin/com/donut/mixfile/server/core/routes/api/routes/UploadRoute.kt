@@ -1,4 +1,4 @@
-package com.donut.mixfile.server.core.routes.api
+package com.donut.mixfile.server.core.routes.api.routes
 
 import com.donut.mixfile.server.core.MixFileServer
 import com.donut.mixfile.server.core.Uploader
@@ -19,8 +19,8 @@ import kotlin.math.ceil
 import kotlin.math.min
 
 
-fun MixFileServer.getUploadRoute(): RoutingHandler {
-    return route@{
+val MixFileServer.uploadRoute: RoutingHandler
+    get() = route@{
 
         val params = call.parameters
 
@@ -39,7 +39,7 @@ fun MixFileServer.getUploadRoute(): RoutingHandler {
             call.respondText("上传已取消", status = HttpStatusCode.InternalServerError)
         }.first)
     }
-}
+
 
 suspend fun MixFileServer.uploadFile(
     channel: ByteReadChannel,

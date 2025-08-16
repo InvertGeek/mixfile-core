@@ -1,7 +1,7 @@
 package com.donut.mixfile.server.core.routes
 
 import com.donut.mixfile.server.core.MixFileServer
-import com.donut.mixfile.server.core.routes.api.getAPIRoute
+import com.donut.mixfile.server.core.routes.api.apiRoute
 import com.donut.mixfile.server.core.utils.extensions.paramPath
 import com.donut.mixfile.server.core.utils.parseFileMimeType
 import io.ktor.http.*
@@ -26,7 +26,7 @@ fun MixFileServer.getRoutes(): Routing.() -> Unit {
             }
         }
 
-        route("/api", getAPIRoute())
+        route("/api", apiRoute)
     }
 }
 

@@ -1,4 +1,4 @@
-package com.donut.mixfile.server.core.routes.api
+package com.donut.mixfile.server.core.routes.api.routes
 
 import com.donut.mixfile.server.core.MixFileServer
 import com.donut.mixfile.server.core.objects.MixFile
@@ -7,7 +7,6 @@ import com.donut.mixfile.server.core.utils.SortedTask
 import com.donut.mixfile.server.core.utils.encodeURL
 import com.donut.mixfile.server.core.utils.extensions.ifNullOrBlank
 import com.donut.mixfile.server.core.utils.extensions.mb
-import com.donut.mixfile.server.core.utils.parseFileMimeType
 import com.donut.mixfile.server.core.utils.resolveMixShareInfo
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -22,8 +21,8 @@ import kotlinx.coroutines.coroutineScope
 import java.nio.ByteBuffer
 
 
-fun MixFileServer.getDownloadRoute(): RoutingHandler {
-    return route@{
+val MixFileServer.downloadRoute: RoutingHandler
+    get() = route@{
         val params = call.parameters
         val shareInfoData = params["s"]
         if (shareInfoData == null) {
@@ -37,7 +36,7 @@ fun MixFileServer.getDownloadRoute(): RoutingHandler {
         }
         respondMixFile(call, shareInfo)
     }
-}
+
 
 suspend fun MixFileServer.respondMixFile(call: ApplicationCall, shareInfo: MixShareInfo) {
     val params = call.parameters
@@ -99,7 +98,7 @@ suspend fun MixFileServer.respondMixFile(call: ApplicationCall, shareInfo: MixSh
         if (it.isNotEmpty()) {
             return@let ContentType.parse(it)
         }
-        return@let name.parseFileMimeType()
+        return@let shareInfo.contentType()
     }
 
     call.respondBytesWriter(

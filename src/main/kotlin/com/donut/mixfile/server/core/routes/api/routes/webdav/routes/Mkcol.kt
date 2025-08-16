@@ -1,8 +1,8 @@
-package com.donut.mixfile.server.core.routes.api.webdav.routes
+package com.donut.mixfile.server.core.routes.api.routes.webdav.routes
 
 import com.donut.mixfile.server.core.MixFileServer
 import com.donut.mixfile.server.core.objects.WebDavFile
-import com.donut.mixfile.server.core.routes.api.webdav.*
+import com.donut.mixfile.server.core.routes.api.routes.webdav.*
 import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*

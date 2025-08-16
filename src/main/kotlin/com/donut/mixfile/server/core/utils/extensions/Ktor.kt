@@ -1,7 +1,7 @@
 package com.donut.mixfile.server.core.utils.extensions
 
-import com.donut.mixfile.server.core.routes.api.webdav.objects.normalPath
-import com.donut.mixfile.server.core.routes.api.webdav.objects.normalizePath
+import com.donut.mixfile.server.core.routes.api.routes.webdav.objects.normalPath
+import com.donut.mixfile.server.core.routes.api.routes.webdav.objects.normalizePath
 import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.routing.*

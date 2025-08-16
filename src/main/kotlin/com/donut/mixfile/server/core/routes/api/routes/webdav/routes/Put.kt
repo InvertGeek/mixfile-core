@@ -1,10 +1,10 @@
-package com.donut.mixfile.server.core.routes.api.webdav.routes
+package com.donut.mixfile.server.core.routes.api.routes.webdav.routes
 
 import com.donut.mixfile.server.core.MixFileServer
 import com.donut.mixfile.server.core.objects.FileDataLog
 import com.donut.mixfile.server.core.objects.WebDavFile
-import com.donut.mixfile.server.core.routes.api.uploadFile
-import com.donut.mixfile.server.core.routes.api.webdav.*
+import com.donut.mixfile.server.core.routes.api.routes.uploadFile
+import com.donut.mixfile.server.core.routes.api.routes.webdav.*
 import com.donut.mixfile.server.core.utils.decompressGzip
 import com.donut.mixfile.server.core.utils.extensions.mb
 import com.donut.mixfile.server.core.utils.parseJsonObject

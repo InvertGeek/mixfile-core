@@ -1,14 +1,14 @@
-package com.donut.mixfile.server.core.routes.api.webdav
+package com.donut.mixfile.server.core.routes.api.routes.webdav
 
 
 import com.donut.mixfile.server.core.MixFileServer
 import com.donut.mixfile.server.core.interceptCall
 import com.donut.mixfile.server.core.objects.MixShareInfo
-import com.donut.mixfile.server.core.routes.api.webdav.objects.WebDavManager
-import com.donut.mixfile.server.core.routes.api.webdav.objects.normalPath
-import com.donut.mixfile.server.core.routes.api.webdav.objects.parentPath
-import com.donut.mixfile.server.core.routes.api.webdav.objects.pathFileName
-import com.donut.mixfile.server.core.routes.api.webdav.routes.*
+import com.donut.mixfile.server.core.routes.api.routes.webdav.objects.WebDavManager
+import com.donut.mixfile.server.core.routes.api.routes.webdav.objects.normalPath
+import com.donut.mixfile.server.core.routes.api.routes.webdav.objects.parentPath
+import com.donut.mixfile.server.core.routes.api.routes.webdav.objects.pathFileName
+import com.donut.mixfile.server.core.routes.api.routes.webdav.routes.*
 import com.donut.mixfile.server.core.utils.extensions.paramPath
 import com.donut.mixfile.server.core.utils.extensions.routePrefix
 import com.donut.mixfile.server.core.utils.getHeader
@@ -65,8 +65,8 @@ suspend fun RoutingContext.handleCopy(keep: Boolean, webDavManager: WebDavManage
     webDavManager.saveData()
 }
 
-fun MixFileServer.getWebDAVRoute(): Route.() -> Unit {
-    return {
+val MixFileServer.webDavRoute: Route.() -> Unit
+    get() = {
         interceptCall({
             if (!webDav.loaded) {
                 it.respond(HttpStatusCode.ServiceUnavailable, "WebDav is Loading")
@@ -94,7 +94,7 @@ fun MixFileServer.getWebDAVRoute(): Route.() -> Unit {
             webDav.saveData()
         }
     }
-}
+
 
 suspend fun ApplicationCall.respondXml(xml: String) {
     respondText(

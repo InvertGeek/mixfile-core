@@ -1,7 +1,7 @@
 package com.donut.mixfile.server.core.objects
 
-import com.donut.mixfile.server.core.routes.api.webdav.objects.normalPath
-import com.donut.mixfile.server.core.routes.api.webdav.objects.xml
+import com.donut.mixfile.server.core.routes.api.routes.webdav.objects.normalPath
+import com.donut.mixfile.server.core.routes.api.routes.webdav.objects.xml
 import com.donut.mixfile.server.core.utils.ConcurrentHashMapSerializer
 import com.donut.mixfile.server.core.utils.parseFileMimeType
 import com.donut.mixfile.server.core.utils.sanitizeFileName
