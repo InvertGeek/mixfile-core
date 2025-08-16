@@ -84,8 +84,13 @@ fun MixFileServer.getWebDAVRoute(): Route.() -> Unit {
             handleCopy(true, webDav)
         }
         webdav("DELETE") {
-            webDav.removeFileNode(davPath)
-            call.respond(HttpStatusCode.NoContent)
+            val deletedFile = webDav.removeFileNode(davPath)
+
+            when (deletedFile) {
+                null -> call.respond(HttpStatusCode.NotFound)
+                else -> call.respond(HttpStatusCode.NoContent)
+            }
+
             webDav.saveData()
         }
     }
