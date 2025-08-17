@@ -24,7 +24,14 @@ val MixFileServer.webDavMkcolRoute: Route.() -> Unit
                     size = shareInfo.fileSize,
                     shareInfoData = shareInfo.toString()
                 )
-                webDav.addFileNode(davParentPath, node)
+
+                webDav.addFileNode(davParentPath, node).also {
+                    if (!it) {
+                        call.respond(HttpStatusCode.Conflict)
+                        return@webdav
+                    }
+                }
+
                 call.respond(HttpStatusCode.Created)
                 webDav.saveData()
                 return@webdav
@@ -39,13 +46,13 @@ val MixFileServer.webDavMkcolRoute: Route.() -> Unit
             }
 
             val node = WebDavFile(isFolder = true, name = davFileName)
-            val added = webDav.addFileNode(davParentPath, node)
 
-            if (!added) {
-                call.respond(HttpStatusCode.Conflict)
-                return@webdav
+            webDav.addFileNode(davParentPath, node).also {
+                if (!it) {
+                    call.respond(HttpStatusCode.Conflict)
+                    return@webdav
+                }
             }
-
             call.respond(HttpStatusCode.Created)
             webDav.saveData()
         }
