@@ -93,10 +93,16 @@ open class WebDavManager {
     open suspend fun saveWebDavData(data: ByteArray) {}
 
     // 添加文件或目录到指定路径
-    open fun addFileNode(path: String, file: WebDavFile): Boolean = synchronized(lock) {
+    open fun addFileNode(path: String, file: WebDavFile, overwrite: Boolean = true): Boolean = synchronized(lock) {
         val folder = getFile(path) ?: return false
         if (!folder.isFolder) {
             return false
+        }
+        if (!overwrite) {
+            val existingFile = getFile("${path}/${file.getName()}")
+            if (existingFile != null) {
+                return false
+            }
         }
         folder.addFile(file)
         return true
@@ -120,12 +126,14 @@ open class WebDavManager {
 
         val srcFile = getFile(path) ?: return false
 
-        val destFile = getFile(dest)
-
-        //目标存在且不覆盖
-        if (!overwrite && destFile != null) {
-            return false
+        if (!overwrite) {
+            val destFile = getFile(dest)
+            //目标存在且不覆盖
+            if (destFile != null) {
+                return false
+            }
         }
+
 
         val destName = dest.pathFileName()
 

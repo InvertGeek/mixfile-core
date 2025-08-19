@@ -25,7 +25,7 @@ val MixFileServer.webDavMkcolRoute: Route.() -> Unit
                     shareInfoData = shareInfo.toString()
                 )
 
-                webDav.addFileNode(davParentPath, node).also {
+                webDav.addFileNode(davParentPath, node, false).also {
                     if (!it) {
                         call.respond(HttpStatusCode.Conflict)
                         return@webdav

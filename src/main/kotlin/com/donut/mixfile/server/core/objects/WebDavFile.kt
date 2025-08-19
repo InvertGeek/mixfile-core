@@ -52,11 +52,14 @@ data class WebDavFile(
         return copy(files = newFiles)
     }
 
-    fun addFile(file: WebDavFile) {
+    fun addFile(file: WebDavFile, overwrite: Boolean = true): Boolean {
         if (!this.isFolder) {
-            return
+            return false
         }
         val existingFile = files[file.name]
+        if (!overwrite && existingFile != null) {
+            return false
+        }
         if (existingFile != null && existingFile.isFolder && file.isFolder) {
             file.files.forEach { (name, subFile) ->
                 if (subFile.isFolder) {
@@ -65,9 +68,10 @@ data class WebDavFile(
                 }
                 existingFile.files[name] = subFile.clone()
             }
-            return
+            return true
         }
         files[file.name] = file.clone()
+        return true
     }
 
     fun listFiles() = files.values.toList()
