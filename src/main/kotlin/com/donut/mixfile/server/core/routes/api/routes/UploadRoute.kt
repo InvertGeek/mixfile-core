@@ -15,6 +15,7 @@ import io.ktor.utils.io.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.io.readByteArray
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.ceil
 import kotlin.math.min
 
@@ -100,7 +101,7 @@ private suspend fun MixFileServer.doUploadFile(
         val fixedChunkSize = min(20.mb, chunkSize)
 
         val chunkCount = ceil(fileSize / fixedChunkSize.toDouble()).toInt()
-        var uploadedChunkCount = 0
+        val uploadedChunkCount = AtomicInteger(0)
         val chunkList = mutableListOf<String>()
 
         var chunkIndex = 0
@@ -122,7 +123,7 @@ private suspend fun MixFileServer.doUploadFile(
                 try {
                     val url = uploader.upload(head, chunkData, secret, this@doUploadFile)
                     chunkList[currentIndex] = url
-                    uploadedChunkCount++
+                    uploadedChunkCount.incrementAndGet()
                     uploadTask.updateProgress(currentChunkSize.toLong(), fileSize)
                 } finally {
                     semaphore.release()
@@ -132,7 +133,7 @@ private suspend fun MixFileServer.doUploadFile(
 
         tasks.awaitAll()
 
-        if (uploadedChunkCount < chunkCount) {
+        if (uploadedChunkCount.get() < chunkCount) {
             throw Exception("上传失败,分片数量不足: ${uploadedChunkCount} < ${chunkCount}")
         }
 
