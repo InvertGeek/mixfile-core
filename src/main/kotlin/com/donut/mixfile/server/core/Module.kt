@@ -39,7 +39,7 @@ val MixFileServer.defaultModule: Application.() -> Unit
             exception<Throwable> { call, cause ->
                 if (!call.response.isCommitted) {
                     call.respondText(
-                        "发生错误: ${cause.message} ${cause.stackTraceToString()}",
+                        "发生错误: ${cause.stackTraceToString()}",
                         status = HttpStatusCode.InternalServerError
                     )
                 }
