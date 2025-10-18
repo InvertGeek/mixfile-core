@@ -9,7 +9,7 @@ plugins {
     `java-library`
 }
 
-val projectVersion = "2.0.2"
+val projectVersion = "2.0.3"
 group = "com.donut.mixfile-core"
 version = projectVersion
 
