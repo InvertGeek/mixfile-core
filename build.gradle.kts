@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "com.donut"
-version = "2.0.3"
+version = "2.0.4"
 
 repositories {
     mavenCentral()
@@ -58,7 +58,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("org.mozilla:rhino:1.7.15")
+    implementation("org.mozilla:rhino:1.7.15.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
     api("io.ktor:ktor-client-core")
     api("io.ktor:ktor-client-okhttp")
