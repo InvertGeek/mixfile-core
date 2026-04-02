@@ -34,7 +34,7 @@ fun <T> Scriptable.putFunc(name: String, func: (args: Array<out Any>) -> T?) {
 inline fun <reified T> Array<out Any?>.param(index: Int, default: T): T {
     val param = this.getOrNull(index) ?: return default
     //处理 org.mozilla.javascript.ConsString
-    if (default is String) {
+    if (param is ConsString) {
         return param.toString() as T
     }
     return param as T
@@ -183,9 +183,6 @@ fun getRhinoScope(context: Context, client: HttpClient): Scriptable {
         val reqHeaders = args.param(3, NativeObject())
 
         val reqBody = args.param(2, Any()).let {
-            if (it is String) {
-                return@let it
-            }
             if (it is NativeObject) {
                 return@let MultiPartFormDataContent(parseFormData(it))
             }
@@ -193,7 +190,7 @@ fun getRhinoScope(context: Context, client: HttpClient): Scriptable {
                 val first = it.firstOrNull() ?: return@let null
                 return@let first.toString().decodeBase64Bytes()
             }
-            return@let null
+            return@let it
         }
 
 
