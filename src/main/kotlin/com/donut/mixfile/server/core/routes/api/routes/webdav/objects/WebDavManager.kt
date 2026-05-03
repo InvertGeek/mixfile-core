@@ -126,14 +126,6 @@ open class WebDavManager {
 
         val srcFile = getFile(path) ?: return false
 
-        if (!overwrite) {
-            val destFile = getFile(dest)
-            //目标存在且不覆盖
-            if (destFile != null) {
-                return false
-            }
-        }
-
 
         val destName = dest.pathFileName()
 
@@ -144,7 +136,8 @@ open class WebDavManager {
                 shareInfoData = srcFile.shareInfoData.let {
                     val shareInfo = resolveMixShareInfo(srcFile.shareInfoData)
                     shareInfo?.copy(fileName = destName)?.toString() ?: it
-                })
+                }),
+            overwrite
         )
 
         if (!added) {
