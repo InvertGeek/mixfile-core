@@ -1,4 +1,6 @@
+jdk:
+  - openjdk25
 before_install:
-  - sdk update
-  - sdk install java 25-tem < /dev/null
-  - sdk use java 25-tem
+  - sdk install gradle 9.0.0
+install:
+  - gradle build publishToMavenLocal
