@@ -1,7 +1,7 @@
 import com.donut.mixfile.server.core.MixFileServer;
 import com.donut.mixfile.server.core.Uploader;
 import com.donut.mixfile.server.core.objects.MixShareInfo;
-import com.donut.mixfile.server.core.uploaders.A2Uploader;
+import com.donut.mixfile.server.core.uploaders.base.js.JSUploader;
 import org.jetbrains.annotations.NotNull;
 
 import static com.donut.mixfile.server.core.utils.ShareCodeKt.resolveMixShareInfo;
@@ -32,7 +32,12 @@ public class ServerTestJava {
 
             @Override
             public @NotNull Uploader getUploader() {
-                return A2Uploader.INSTANCE;
+                return new JSUploader("") {
+                    @Override
+                    public @NotNull String getScriptCode() {
+                        return "";
+                    }
+                };
             }
 
 

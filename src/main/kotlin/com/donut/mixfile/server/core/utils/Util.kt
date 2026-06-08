@@ -23,6 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 import kotlin.random.Random
+import kotlin.time.Duration.Companion.milliseconds
 
 fun String.sanitizeFileName(): String {
     // 定义非法字符，包括控制字符、文件系统非法字符、路径遍历等
@@ -197,7 +198,7 @@ suspend fun <T> retry(
             //取消后立即停止重试
             if (e is CancellationException) throw e
             if (e is NoRetryException) throw e
-            delay(delay)
+            delay(delay.milliseconds)
         }
     }
     return block() // 最后一次尝试

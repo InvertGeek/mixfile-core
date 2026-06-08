@@ -1,6 +1,6 @@
 import com.donut.mixfile.server.core.MixFileServer
 import com.donut.mixfile.server.core.Uploader
-import com.donut.mixfile.server.core.uploaders.A2Uploader
+import com.donut.mixfile.server.core.uploaders.base.js.JSUploader
 import com.donut.mixfile.server.core.utils.resolveMixShareInfo
 import kotlin.io.encoding.ExperimentalEncodingApi
 
@@ -23,7 +23,10 @@ fun main() {
         }
 
         override fun getUploader(): Uploader {
-            return A2Uploader
+            return object : JSUploader(name = "") {
+                override val scriptCode: String
+                    get() = ""
+            }
         }
 
     }
