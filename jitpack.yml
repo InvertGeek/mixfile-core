@@ -1,6 +1,2 @@
 jdk:
   - openjdk25
-before_install:
-  - sdk install gradle 9.0.0
-install:
-  - gradle build publishToMavenLocal
