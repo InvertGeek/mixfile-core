@@ -14,7 +14,6 @@ import io.ktor.server.routing.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Semaphore
-import kotlinx.io.readByteArray
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.math.ceil
 import kotlin.math.min
@@ -113,7 +112,13 @@ private suspend fun MixFileServer.doUploadFile(
 
         while (!channel.isClosedForRead) {
             semaphore.acquire()
-            val chunkData = channel.readRemaining(fixedChunkSize.toLong()).readByteArray()
+            // 必须精确读满 fixedChunkSize(末片除外)。不能用 readRemaining: 在 IO 线程
+            // 投递节奏异常(如 CPU 卡顿/长 GC)时它可能多读
+            val chunkData = channel.readChunkExact(fixedChunkSize)
+            if (chunkData.isEmpty()) {
+                semaphore.release()
+                break
+            }
             val currentChunkSize = chunkData.size
             totalChunkSize += currentChunkSize
             val currentIndex = chunkIndex
@@ -156,4 +161,26 @@ private suspend fun MixFileServer.doUploadFile(
         }
 
     }
+}
+
+/**
+ * 精确读满 [size] 字节;通道提前关闭则返回已读到的字节(可能短于 size, 用作末片)。
+ *
+ * 用 [readAvailable] 写入到固定大小的目标数组——写入量受数组长度物理封顶,
+ * 在构造上**不可能**超读。这是为了避开 [readRemaining] 在 IO 线程节奏
+ * 异常(CPU 长卡顿/长 GC)下偶发的超读: 单次超读会让某片 != fixedChunkSize,
+ */
+private suspend fun ByteReadChannel.readChunkExact(size: Int): ByteArray {
+    val buf = ByteArray(size)
+    var off = 0
+    while (off < size) {
+        val n = readAvailable(buf, off, size - off)
+        if (n < 0) break // 通道关闭
+        off += n
+    }
+    if (off > size) {
+        // 物理上不可能, 但作为防御性断言保留
+        throw IllegalStateException("分片读取超规格: $off > $size")
+    }
+    return if (off == size) buf else buf.copyOf(off)
 }
